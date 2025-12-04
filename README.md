@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # e_commerce_app
 
 A new Flutter project.
@@ -14,3 +15,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# E-commerce_App
+Online Shopping App (Flutter)
+>>>>>>> 15512d95bd086e248b8551ea2df085a6465c1a71

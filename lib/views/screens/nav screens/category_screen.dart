@@ -14,7 +14,7 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   Category? _selectedcategory;
   late Future<List<Category>> futureCategories;
-
+  
   @override
   void initState() {
     // TODO: implement initState
@@ -59,11 +59,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           title: Text(
                             category.name,
                             style: GoogleFonts.quicksand(
-                              fontSize: 15,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: _selectedcategory==category?Colors.black:Colors.black,
+                              color: _selectedcategory == category
+                                  ? Colors.blue
+                                  : Colors.black,
                             ),
                           ),
+                          
                         );
                       },
                     );
@@ -73,20 +76,35 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
           ),
           //RIGHT SIDE:
-          Expanded(flex: 5,
-          child: _selectedcategory!= null?
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(_selectedcategory!.name),
-              )
-            ],
-          ):
-          Container(    
-            
-                ))
+          Expanded(
+            flex: 5,
+            child: _selectedcategory != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(_selectedcategory!.name,
+                        style: GoogleFonts.quicksand(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.7,
+                        ),),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 150,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(image: NetworkImage(_selectedcategory!.banner),
+                            fit: BoxFit.cover)
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                :Container()
+          ),
         ],
       ),
     );

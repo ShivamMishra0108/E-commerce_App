@@ -12,7 +12,7 @@ class CategoryController {
   Future<List<Category>> loadCategories() async {
     try {
       http.Response response = await http.get(
-        Uri.parse('$uri/api/categories'),
+        Uri.parse('$uri/api/get-categories'),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
         },
