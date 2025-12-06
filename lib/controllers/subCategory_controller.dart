@@ -1,6 +1,6 @@
 
-import 'package:e_commerce_app/models/subCategory_model.dart';
+// import 'package:e_commerce_app/models/subCategory_model.dart';
 
-class subcategoryController{
-  Future <List<Subcategory>> getSubCategoryByCategory()
-}
+// class subcategoryController{
+//   Future <List<Subcategory>> getSubCategoryByCategory()
+// }
