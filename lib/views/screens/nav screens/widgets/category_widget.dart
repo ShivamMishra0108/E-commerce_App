@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/controllers/category_controller.dart';
 import 'package:e_commerce_app/models/category_models.dart';
+import 'package:e_commerce_app/views/Details/screen/innerr_category_screen.dart';
 import 'package:e_commerce_app/views/screens/nav%20screens/widgets/reuseable_textWidget.dart';
 import 'package:flutter/material.dart';
 
@@ -45,11 +46,23 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                 ),
                 itemBuilder: (context, index) {
                   final Category = categories[index];
-                  return Column(
-                    children: [
-                      Image.network(Category.image, height: 47, width: 47),
-                      Text(Category.name),
-                    ],
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return InnerCategoryScreen(category: Category,);
+                          },
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Image.network(Category.image, height: 47, width: 47),
+                        Text(Category.name),
+                      ],
+                    ),
                   );
                 },
               );

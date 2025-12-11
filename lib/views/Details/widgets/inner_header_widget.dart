@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({super.key});
+class InnerHeaderWidget extends StatelessWidget {
+  const InnerHeaderWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +15,16 @@ class HeaderWidget extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
           ),
-          // Positioned(
-          //   left: 7,
-          //   top: 70,
-          //   child: IconButton(
-          //     onPressed: () {
-          //       Navigator.of(context).pop();
-          //     },
-          //     icon: Icon(Icons.arrow_back, color: Colors.white),
-          //   ),
-          // ),
+          Positioned(
+            left: 7,
+            top: 70,
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+            ),
+          ),
           Positioned(
             left: 48,
             top: 68,
