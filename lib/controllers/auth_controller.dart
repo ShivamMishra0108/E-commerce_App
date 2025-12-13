@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/user.dart';
+import 'package:e_commerce_app/provider/user_provider.dart';
 import 'package:e_commerce_app/services/manage_http_responses.dart';
 import 'package:e_commerce_app/views/screens/auth_screens/login_screen.dart';
 import 'package:e_commerce_app/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
+final providerContainer = ProviderContainer();
 class AuthController {
   void showSnackBar(BuildContext context, String title) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(title)));
@@ -80,7 +84,27 @@ class AuthController {
       manageHttpResponse(
         response: response,
         context: context,
-        onSuccess: () {
+        onSuccess: ()async {
+          // Access sharedPreference for auth token and user data storage:
+          SharedPreferences preferencres = await SharedPreferences.getInstance();
+
+          // Extract te auth token from the response body:
+          String token = jsonDecode(response.body)['token'];
+
+          //Store the auth token securely in shaered preferences:
+          await preferencres.setString('auth_token', token);
+         
+          // Encode the user fdata recideved from backend as json:
+          String userJson =
+          jsonEncode(jsonDecode(response.body)['user']);
+
+          //Update the application state with user data from riverpod:
+          providerContainer.read(userProvider.notifier).setUser(userJson);
+
+          //Store the data in hsaredPreferences for future use:
+          await preferencres.setString('user', userJson);
+
+
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => MainScreen()),
