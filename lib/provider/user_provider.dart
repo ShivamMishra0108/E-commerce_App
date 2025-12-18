@@ -54,7 +54,7 @@ class UserProvider extends StateNotifier<User?> {
   }
 
   // Clear user
-  void clearUser() {
+  void signOut() {
     state = null;
   }
 }
