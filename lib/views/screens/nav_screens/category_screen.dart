@@ -3,7 +3,7 @@ import 'package:e_commerce_app/controllers/subCategory_controller.dart';
 import 'package:e_commerce_app/models/category_models.dart';
 import 'package:e_commerce_app/models/subCategory_model.dart';
 import 'package:e_commerce_app/views/Details/widgets/subCategory_tile_widget.dart';
-import 'package:e_commerce_app/views/screens/nav%20screens/widgets/header_widget.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/widgets/header_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

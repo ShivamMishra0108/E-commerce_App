@@ -1,7 +1,7 @@
 import 'package:e_commerce_app/controllers/category_controller.dart';
 import 'package:e_commerce_app/models/category_models.dart';
 import 'package:e_commerce_app/views/Details/screen/innerr_category_screen.dart';
-import 'package:e_commerce_app/views/screens/nav%20screens/widgets/reuseable_textWidget.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/widgets/reuseable_textWidget.dart';
 import 'package:flutter/material.dart';
 
 class CategoryWidget extends StatefulWidget {

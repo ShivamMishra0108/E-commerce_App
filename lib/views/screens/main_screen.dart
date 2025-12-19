@@ -1,9 +1,9 @@
-import 'package:e_commerce_app/views/screens/nav%20screens/Store_screen.dart';
-import 'package:e_commerce_app/views/screens/nav%20screens/account_screen.dart';
-import 'package:e_commerce_app/views/screens/nav%20screens/cart_screen.dart';
-import 'package:e_commerce_app/views/screens/nav%20screens/category_screen.dart';
-import 'package:e_commerce_app/views/screens/nav%20screens/favorite_screen.dart';
-import 'package:e_commerce_app/views/screens/nav%20screens/home_screen.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/Store_screen.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/account_screen.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/cart_screen.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/category_screen.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/favorite_screen.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
