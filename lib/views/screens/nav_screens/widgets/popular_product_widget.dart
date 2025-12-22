@@ -19,7 +19,7 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    futurePopularProducts = ProductController().loadAllProducts();
+    futurePopularProducts = ProductController().getPopularProduct();
   }
 
   @override
@@ -39,6 +39,7 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
             height: 250,
             child: ListView.builder(
               itemCount: products!.length,
+                scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemBuilder: (context, index){
                 final product = products[index];
@@ -48,4 +49,9 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
         }
       });
   }
+
 }
+
+
+
+

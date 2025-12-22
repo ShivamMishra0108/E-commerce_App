@@ -60,114 +60,110 @@ class _CategoryScreenState extends State<CategoryScreen> {
         children: [
           HeaderWidget(),
           Expanded(
-            child: SingleChildScrollView(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      color: Colors.grey.shade200,
-                      child: FutureBuilder(
-                        future: futureCategories,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Text("Error: ${snapshot.error}");
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return const Center(child: Text("No categories"));
-                          } else {
-                            final categories = snapshot.data!;
-                            return ListView.builder(
-                              itemCount: categories.length,
-                              itemBuilder: (context, index) {
-                                final category = categories[index];
-                                return ListTile(
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedcategory = category;
-                                    });
-                                    _loadSubCategories(category.name);
-                                  },
-                                  title: Text(
-                                    category.name,
-                                    style: GoogleFonts.quicksand(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: _selectedcategory == category
-                                          ? Colors.blue
-                                          : Colors.black,
-                                    ),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.grey.shade200,
+                    child: FutureBuilder(
+                      future: futureCategories,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Text("Error: ${snapshot.error}");
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(child: Text("No categories"));
+                        } else {
+                          final categories = snapshot.data!;
+                          return ListView.builder(
+                            itemCount: categories.length,
+                            itemBuilder: (context, index) {
+                              final category = categories[index];
+                              return ListTile(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedcategory = category;
+                                  });
+                                  _loadSubCategories(category.name);
+                                },
+                                title: Text(
+                                  category.name,
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: _selectedcategory == category
+                                        ? Colors.blue
+                                        : Colors.black,
                                   ),
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
                   ),
-                  //RIGHT SIDE:
-                  Expanded(
-                    flex: 5,
-                    child: _selectedcategory != null
-                        ? SingleChildScrollView(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    _selectedcategory!.name,
-                                    style: GoogleFonts.quicksand(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.7,
-                                    ),
-                                  ),
+                ),
+                //RIGHT SIDE:
+                Expanded(
+                  flex: 5,
+                  child: _selectedcategory != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                _selectedcategory!.name,
+                                style: GoogleFonts.quicksand(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.7,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 150,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                          _selectedcategory!.banner,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4,
-                                          mainAxisSpacing: 8,
-                                          crossAxisSpacing: 8,
-                                          childAspectRatio: 0.6,
-                                        ),
-                                    itemCount: _subcategories.length,
-                                    itemBuilder: (context, index) {
-                                      final subcategory = _subcategories[index];
-                          
-                                      return SubcategoryTileWidget(
-                                        image: subcategory.image,
-                                        title: subcategory.subCategoryName,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                      _selectedcategory!.banner,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GridView.builder(
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 4,
+                                      mainAxisSpacing: 8,
+                                      crossAxisSpacing: 8,
+                                      childAspectRatio: 0.6,
+                                    ),
+                                itemCount: _subcategories.length,
+                                itemBuilder: (context, index) {
+                                  final subcategory = _subcategories[index];
+                      
+                                  return SubcategoryTileWidget(
+                                    image: subcategory.image,
+                                    title: subcategory.subCategoryName,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         )
-                        : Container(),
-                  ),
-                ],
-              ),
+                      : Container(),
+                ),
+              ],
             ),
           ),
         ],

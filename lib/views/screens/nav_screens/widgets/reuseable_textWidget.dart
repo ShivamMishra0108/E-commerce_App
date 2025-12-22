@@ -24,7 +24,9 @@ class TextWidget extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.bold,
               color: Colors.blue
-          ),)
+          ),
+        
+          )
         ],
       ),
     );
