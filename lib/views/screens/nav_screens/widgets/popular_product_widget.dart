@@ -43,7 +43,10 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
               shrinkWrap: true,
               itemBuilder: (context, index){
                 final product = products[index];
+                print(product.images);
+
                 return ProductItemWidget(product: product,);
+
               }),
           );
         }

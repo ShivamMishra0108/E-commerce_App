@@ -57,10 +57,11 @@ class ProductItemWidget extends StatelessWidget {
               color: Colors.grey[300],
               borderRadius: BorderRadius.circular(22),
             ),
-            clipBehavior: Clip.hardEdge, // to make rounded corners work
-            child: product.images.isNotEmpty
+            clipBehavior: Clip.hardEdge, 
+            child: Stack(// to make rounded corners work
+            children:[ product.images.isNotEmpty
                 ? Image.network(
-                    product.images[0], // first image
+                  "https://res.cloudinary.com/dbum12hl4/image/upload/v1766064702/Runners/l509vnwzlwhbhpkzdjm6.webp",
                     height: 170,
                     width: 170,
                     fit: BoxFit.cover,
@@ -78,6 +79,7 @@ class ProductItemWidget extends StatelessWidget {
                       );
                     },
                   )
+              
                 : Center(
                     child: Icon(
                       Icons.image,
@@ -85,6 +87,22 @@ class ProductItemWidget extends StatelessWidget {
                       color: Colors.grey[700],
                     ),
                   ),
+                  Positioned(
+                    top: 15,
+                    right: 5,
+                    child: Image.asset("assets/icons/love.png"),
+                    height: 26,
+                    width: 26,),
+
+                  Positioned(
+                    top: 3,
+                   left: 3,
+                    child: Image.asset("assets/icons/cart.png"),
+                    height: 26,
+                    width: 26,),
+                  ]
+            )
+                  
           ),
           const SizedBox(height: 8),
           Text(
