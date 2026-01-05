@@ -35,7 +35,7 @@ class ProductController {
 
 
 
-
+// GET POPULAR PEODUCTS:
 Future<List<Product>> getPopularProduct() async {
   try {
     http.Response response = await http.get(
@@ -66,6 +66,40 @@ Future<List<Product>> getPopularProduct() async {
     }
   } catch (e) {
     throw Exception("Failed loading popular products: $e");
+  }
+}
+
+// GET PRODUCTS BY CATEGORY:
+Future<List<Product>> getProductByCategory(String category)async{
+  try {
+    http.Response response = await http.get(Uri.parse("$uri/api/products-by-category/$category"),
+     headers: <String, String>{
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+
+      List<Product> products = data.map((productJson) {
+        Map<String, dynamic> map = productJson as Map<String, dynamic>;
+
+        // Prepend backend URL to each image
+        List<String> fullImages = (map['images'] as List<dynamic>)
+            .map((img) => "$uri/uploads/$img")
+            .toList();
+
+        map['images'] = fullImages;
+        return Product.fromJson(map);
+      }).toList();
+
+      return products;
+    } else {
+      throw Exception("Failed to load popular products");
+    }
+  } catch (e) {
+    throw Exception("Failed loading popular products: $e");
+
   }
 }
 
