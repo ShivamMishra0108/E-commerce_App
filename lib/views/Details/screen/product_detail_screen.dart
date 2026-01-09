@@ -1,19 +1,21 @@
-import 'package:e_commerce_app/models/category_models.dart';
+import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductDetailScreen extends StatefulWidget {
+class ProductDetailScreen extends ConsumerStatefulWidget {
   final Product product;
 
   const ProductDetailScreen({super.key, required this.product});
   @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+  _ProductDetailScreenState createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
+class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final _cartProvider = ref.read(cartProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -210,6 +212,44 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
         ],
+      ),
+      bottomSheet: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: InkWell(
+          onTap: () {
+            _cartProvider.addProductToCart(
+              productId: widget.product.id,
+              productName: widget.product.productName,
+              productPrice: widget.product.productPrice,
+              productQuantity: widget.product.quantity,
+              description: widget.product.description,
+              category: widget.product.category,
+              vendorId: widget.product.vendorId,
+              fullName: widget.product.fullName,
+              image: widget.product.images,
+              quantity: 1,
+            );
+
+            showSnackBar(context, "${widget.product.productName} Added to Cart");
+          },
+          child: Container(
+            height: 50,
+            width: 350,
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(13),
+            ),
+            child: Center(
+              child: Text(
+                "Add to Cart",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
