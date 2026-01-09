@@ -1,4 +1,6 @@
 import 'package:e_commerce_app/provider/cart_provider.dart';
+import 'package:e_commerce_app/views/screens/main_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +15,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final cartData = ref.watch(cartProvider);
+    final _cartProvider = ref.read(cartProvider.notifier);
+    final cartAmount = ref.read(cartProvider.notifier).calculateTotalAmount();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
@@ -75,17 +79,292 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   ),
                 ),
               ),
+              Positioned(
+                left: 20,
+                top: 51,
+                child: Stack(
+                  children: [
+                    Image.asset("assets/icons/cart.png", height: 25, width: 25),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
       ),
-      body: cartData.isEmpty?Center(
-        child: Container(
-          height: 300,
-          width: 300,
-          child: Image.asset("assets/images/emptyCart.png",fit: BoxFit.cover),
+      body: cartData.isEmpty
+          ? Center(
+              child: Column(
+                children: [
+                  SizedBox(height: 50),
+                  Container(
+                    height: 300,
+                    width: 300,
+                    child: Image.asset(
+                      "assets/images/emptyCart.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(foregroundColor: Colors.blue),
+
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return MainScreen();
+                          },
+                        ),
+                      );
+                    },
+
+                    child: Text("Shop Now"),
+                  ),
+                ],
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 49,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: const BoxDecoration(),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          child: Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 25,
+                          top: 20,
+                          child: Container(
+                            height: 10,
+                            width: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 68,
+                          top: 15,
+                          child: Text("You have ${cartData.length} Items"),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: cartData.length,
+                    itemBuilder: (context, index) {
+                      final cartItem = cartData.values.toList()[index];
+
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          child: Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.white,
+                              border: Border(
+                                bottom: BorderSide(color: Colors.grey[200]!),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    height: 100,
+                                    width: 100,
+                                    child: Image.asset(cartItem.image[0]),
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      cartItem.productName,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                                    Text(
+                                      cartItem.category,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+
+                                    Text(
+                                      cartItem.description,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+
+                                    Text(
+                                      "₹${cartItem.productPrice}",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        letterSpacing: 0.05,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            _cartProvider.removeItem(
+                                              cartItem.productId,
+                                            );
+                                          },
+                                          icon: Icon(Icons.delete),
+                                        ),
+
+                                        SizedBox(width: 10,),
+
+                                        Container(
+                                          height: 40,
+                                          width: 117,
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              IconButton(
+                                                onPressed: () {
+                                                  if (cartItem.quantity == 0) {
+                                                    _cartProvider.removeItem(
+                                                      cartItem.productId,
+                                                    );
+                                                  }
+                                                  _cartProvider
+                                                      .decrementQuantity(
+                                                        cartItem.productId,
+                                                      );
+                                                },
+                                                icon: Icon(
+                                                  CupertinoIcons.minus,
+                                                ),
+                                                color: Colors.white,
+                                              ),
+                                              Text(
+                                                cartItem.quantity.toString(),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+
+                                              IconButton(
+                                                onPressed: () {
+                                                  _cartProvider
+                                                      .incrementQuantity(
+                                                        cartItem.productId,
+                                                      );
+                                                },
+                                                icon: Icon(CupertinoIcons.plus),
+                                                color: Colors.white,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 15,),
+
+                                        Container(
+                                          height: 40,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: Colors.yellow.shade500,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              "Buy Now",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+      bottomNavigationBar: Container(
+        height: 60,
+        color: Colors.white,
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "Total: ₹${cartAmount.toString()}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            Container(
+              height: 40,
+              width: 130,
+              decoration: BoxDecoration(
+                color: Colors.yellow.shade600,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Center(
+                child: Text(
+                  "Place Order",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
         ),
-      ):Container()
+      ),
     );
   }
 }
+//₹${cartData.fold(0, (sum, item) => sum + item.productPrice * item.quantity
