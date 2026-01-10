@@ -33,7 +33,7 @@ class ProductItemWidget extends StatelessWidget {
               child: Stack(// to make rounded corners work
               children:[ product.images.isNotEmpty
                   ? Image.network(
-                    "https://res.cloudinary.com/dbum12hl4/image/upload/v1766064702/Runners/l509vnwzlwhbhpkzdjm6.webp",
+                    product.images[0],
                       height: 170,
                       width: 170,
                       fit: BoxFit.cover,

@@ -7,6 +7,7 @@ import 'package:e_commerce_app/views/Details/widgets/inner_banner_widgert.dart';
 import 'package:e_commerce_app/views/Details/widgets/inner_header_widget.dart';
 import 'package:e_commerce_app/views/Details/widgets/subCategory_tile_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/widgets/product_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/reuseable_textWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -122,7 +123,9 @@ class _InnerCategoryContentState extends State<InnerCategoryContent> {
                 }),
             );
           }
-        })
+        }),
+        ProductWidget(),
+
           ],
         ),
       ),

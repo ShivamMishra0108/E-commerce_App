@@ -35,6 +35,36 @@ class ProductController {
 
 
 
+  // GET PRODUCTS:
+   Future<List<Product>> loadProducts() async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$uri/api/get-products'),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+      );
+      
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        List<Product> products = data
+            .map((category) => Product.fromJson(category))
+            .toList();
+        return products;
+      } else {
+        throw Exception('Failed to load categories');
+      }
+    } catch (e) {
+      throw Exception('Error loading categories $e');
+    }
+  }
+
+
+
+
 // GET POPULAR PEODUCTS:
 Future<List<Product>> getPopularProduct() async {
   try {
