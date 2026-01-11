@@ -1,8 +1,66 @@
+// import 'package:e_commerce_app/controllers/product_controller.dart';
+// import 'package:e_commerce_app/models/product_model.dart';
+// import 'package:e_commerce_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+// import 'package:e_commerce_app/views/screens/nav_screens/widgets/product_widget.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/widgets.dart';
+
+// class PopularProductWidget extends StatefulWidget {
+//   const PopularProductWidget({super.key});
+
+//   @override
+//   State<PopularProductWidget> createState() => _PopularProductWidgetState();
+// }
+
+// class _PopularProductWidgetState extends State<PopularProductWidget> {
+
+//   late Future<List<Product>>  futurePopularProducts;
+
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     futurePopularProducts = ProductController().getPopularProduct();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder(
+//       future: futurePopularProducts, 
+//       builder: (context, snapshot) {
+//         if(snapshot.connectionState== ConnectionState.waiting){
+//           return Center(child: CircularProgressIndicator(),);
+//         }else if(snapshot.hasError){
+//           return Center(child: Text("Error: ${snapshot.error}"),);
+//         }else if(!snapshot.hasData || snapshot.data!.isEmpty){
+//           return Center(child: Text("No Popular Products"),);
+//         }else{
+//           final products = snapshot.data;
+//           return SizedBox(
+//             height: 250,
+//             child: ListView.builder(
+//               itemCount: products!.length,
+//                 scrollDirection: Axis.horizontal,
+//               shrinkWrap: true,
+//               itemBuilder: (context, index){
+//                 final product = products[index];
+//                 print(product.images);
+
+//                return ProductItemWidget(product: product);
+//               }),
+//           );
+//         }
+//       });
+//   }
+
+// }
+
+
+
 import 'package:e_commerce_app/controllers/product_controller.dart';
 import 'package:e_commerce_app/models/product_model.dart';
-import 'package:e_commerce_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:e_commerce_app/views/Details/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class PopularProductWidget extends StatefulWidget {
   const PopularProductWidget({super.key});
@@ -12,49 +70,146 @@ class PopularProductWidget extends StatefulWidget {
 }
 
 class _PopularProductWidgetState extends State<PopularProductWidget> {
-
-  late Future<List<Product>>  futurePopularProducts;
+  late Future<List<Product>> futurePopularProducts;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    futurePopularProducts = ProductController().getPopularProduct();
+    loadPopularProducts();
+  }
+
+  void loadPopularProducts() {
+    futurePopularProducts = ProductController().loadProducts(); 
+    // or getPopularProduct() if you want only popular ones
+  }
+
+  String resolveImageUrl(String image) {
+    if (image.startsWith('http')) return image;
+    const baseUrl = 'https://api.your-backend.com'; // replace with your backend
+    return '$baseUrl/$image';
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: futurePopularProducts, 
+    return FutureBuilder<List<Product>>(
+      future: futurePopularProducts,
       builder: (context, snapshot) {
-        if(snapshot.connectionState== ConnectionState.waiting){
-          return Center(child: CircularProgressIndicator(),);
-        }else if(snapshot.hasError){
-          return Center(child: Text("Error: ${snapshot.error}"),);
-        }else if(!snapshot.hasData || snapshot.data!.isEmpty){
-          return Center(child: Text("No Popular Products"),);
-        }else{
-          final products = snapshot.data;
-          return SizedBox(
-            height: 250,
-            child: ListView.builder(
-              itemCount: products!.length,
-                scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemBuilder: (context, index){
-                final product = products[index];
-                print(product.images);
-
-                return ProductItemWidget(product: product,);
-
-              }),
-          );
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text("Error: ${snapshot.error}"));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("No Popular Products"));
         }
-      });
+
+        final products = snapshot.data!;
+
+        return SizedBox(
+          height: 250, // height matches ProductItemWidget
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ProductDetailScreen(product: product),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 170,
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Product image
+                      Container(
+                        height: 170,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(22),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: Stack(
+                          children: [
+                            product.images.isNotEmpty
+                                ? Image.network(
+                                    resolveImageUrl(product.images[0]),
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (context, child,
+                                        loadingProgress) {
+                                      if (loadingProgress == null)
+                                        return child;
+                                      return const Center(
+                                          child:
+                                              CircularProgressIndicator());
+                                    },
+                                    errorBuilder:
+                                        (context, error, stackTrace) {
+                                      return const Center(
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          size: 50,
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : const Center(
+                                    child: Icon(Icons.image, size: 50),
+                                  ),
+                            Positioned(
+                              top: 15,
+                              right: 5,
+                              child: Image.asset(
+                                "assets/icons/love.png",
+                                height: 26,
+                                width: 26,
+                              ),
+                            ),
+                            Positioned(
+                              top: 5,
+                              left: 5,
+                              child: Image.asset(
+                                "assets/icons/cart.png",
+                                height: 26,
+                                width: 26,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        product.productName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "\$${product.productPrice.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                            fontSize: 14, color: Colors.green),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
-
 }
-
-
-
 

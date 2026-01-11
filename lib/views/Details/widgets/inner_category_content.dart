@@ -6,6 +6,7 @@ import 'package:e_commerce_app/models/subCategory_model.dart';
 import 'package:e_commerce_app/views/Details/widgets/inner_banner_widgert.dart';
 import 'package:e_commerce_app/views/Details/widgets/inner_header_widget.dart';
 import 'package:e_commerce_app/views/Details/widgets/subCategory_tile_widget.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/widgets/popular_product_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/product_item_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/product_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/reuseable_textWidget.dart';
@@ -118,13 +119,12 @@ class _InnerCategoryContentState extends State<InnerCategoryContent> {
                   final product = products[index];
                   print(product.images);
         
-                  return ProductItemWidget(product: product,);
+                  return PopularProductWidget();
         
                 }),
             );
           }
         }),
-        ProductWidget(),
 
           ],
         ),

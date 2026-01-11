@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart' as Icons;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
-import 'package:e_commerce_app/views/screens/main_screen.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -16,8 +14,6 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
-    final cartData = ref.watch(cartProvider);
-    final _cartProvider = ref.read(cartProvider.notifier);
     final cartAmount = ref.read(cartProvider.notifier).calculateTotalAmount();
     final double discount = cartAmount / 10;
     final double tax = (cartAmount / 100) * 5;

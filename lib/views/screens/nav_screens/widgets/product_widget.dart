@@ -12,113 +12,135 @@ class ProductWidget extends StatefulWidget {
 class ProductWidgetState extends State<ProductWidget> {
   late Future<List<Product>> futureproducts;
 
-
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     loadData();
   }
 
   void loadData() {
-    setState(() {
-      futureproducts = ProductController().loadProducts();
-    });
+    futureproducts = ProductController().loadProducts();
   }
 
   void reload() => loadData();
 
   @override
   Widget build(BuildContext context) {
-    return 
-        FutureBuilder(
-          future: futureproducts,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text("No Products"));
-            }
+    return FutureBuilder<List<Product>>(
+      future: futureproducts,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("No Products"));
+        }
 
-            final products = snapshot.data!;
+        final products = snapshot.data!;
 
-            return GridView.builder(
-              shrinkWrap: true,
-              itemCount: products.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                 crossAxisCount: 4,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.5,
-              ),
-              itemBuilder: (context, index) {
-                final product = products[index];
+        return GridView.builder(
+          shrinkWrap: true,
+          itemCount: products.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: 0.55,
+          ),
+          itemBuilder: (context, index) {
+            final product = products[index];
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                   decoration: BoxDecoration(
-                      border: Border.all(
-                        color:  Colors.grey,
-                        width:  1,
-                      ),
-                      borderRadius: BorderRadius.circular(12)
+            return Container(
+              margin: const EdgeInsets.all(6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(22),
                     ),
-                  
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          
-                           product.images.isNotEmpty
-                                ? Image.network(
-                                    product.images[0],
-                                    height: 70,
-                                    width: 70,
-                                  )
-                                : Icon(Icons.image_not_supported, size: 60),
-                        
-                            SizedBox(height: 8),
-                            
-                            Text(
-                              product.productName,
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18
+                    clipBehavior: Clip.hardEdge,
+                    child: Stack(
+                      children: [
+                        product.images.isNotEmpty
+                            ? Image.network(
+                                product.images[0],
+                                height: 140,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                loadingBuilder: (context, child, progress) {
+                                  if (progress == null) return child;
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      size: 40,
+                                      color: Colors.grey[700],
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Icon(
+                                  Icons.image,
+                                  size: 40,
+                                  color: Colors.grey[700],
+                                ),
                               ),
-                            ),
-                
-                            SizedBox(height: 12,),
-                
-                            Text(
-                             "/${ product.subCategory}",
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              style: TextStyle(
-                                fontSize: 14
-                              ),
-                            ),
-                
-                            Text(
-                              "/${product.category}",
-                              textAlign: TextAlign.center,
-                              maxLines: 2,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
-                            ),
-                        ],
-                      ),
+
+                        Positioned(
+                          top: 10,
+                          right: 8,
+                          child: Image.asset(
+                            "assets/icons/love.png",
+                            height: 24,
+                            width: 24,
+                          ),
+                        ),
+                        Positioned(
+                          top: 10,
+                          left: 8,
+                          child: Image.asset(
+                            "assets/icons/cart.png",
+                            height: 24,
+                            width: 24,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    product.productName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    "\$${product.productPrice.toStringAsFixed(2)}",
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         );
-      
-    
+      },
+    );
   }
 }
