@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/provider/cart_provider.dart';
+import 'package:e_commerce_app/views/Details/screen/checkout_screen.dart';
 import 'package:e_commerce_app/views/screens/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -236,8 +237,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                     ),
 
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+
                                       children: [
                                         IconButton(
                                           onPressed: () {
@@ -248,7 +250,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                           icon: Icon(Icons.delete),
                                         ),
 
-                                        SizedBox(width: 10,),
+                                        SizedBox(width: 10),
 
                                         Container(
                                           height: 40,
@@ -265,7 +267,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                             children: [
                                               IconButton(
                                                 onPressed: () {
-                                                  if (cartItem.quantity == 0) {
+                                                  if (cartItem.quantity == 1) {
                                                     _cartProvider.removeItem(
                                                       cartItem.productId,
                                                     );
@@ -300,23 +302,25 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                             ],
                                           ),
                                         ),
-                                        SizedBox(width: 15,),
+                                        SizedBox(width: 15),
 
-                                        Container(
-                                          height: 40,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            color: Colors.yellow.shade500,
-                                            borderRadius: BorderRadius.circular(
-                                              8,
+                                        InkWell(
+                                          onTap: () {},
+                                          child: Container(
+                                            height: 40,
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              color: Colors.yellow.shade500,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              "Buy Now",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
+                                            child: Center(
+                                              child: Text(
+                                                "Buy Now",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -343,21 +347,37 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              "Total: ₹${cartAmount.toString()}",
+              "Sub Total: ₹${cartAmount.toString()}",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
-            Container(
-              height: 40,
-              width: 130,
-              decoration: BoxDecoration(
-                color: Colors.yellow.shade600,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Center(
-                child: Text(
-                  "Place Order",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            InkWell(
+              onTap: () {
+                if (cartAmount != 0.0) {
+                  Navigator.push(
+                    context,
+                    (MaterialPageRoute(
+                      builder: (context) {
+                        return CheckoutScreen();
+                      },
+                    )),
+                  );
+                }
+              },
+              child: Container(
+                height: 40,
+                width: 130,
+                decoration: BoxDecoration(
+                  color: cartAmount == 0.0
+                      ? Colors.grey
+                      : Colors.yellow.shade600,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Center(
+                  child: Text(
+                    "Place Order",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),
