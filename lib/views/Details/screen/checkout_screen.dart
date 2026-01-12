@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:flutter/cupertino.dart' as Icons;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,8 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
+  String selectedPayment = "";
+
   @override
   Widget build(BuildContext context) {
     final cartAmount = ref.read(cartProvider.notifier).calculateTotalAmount();
@@ -19,8 +22,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     final double tax = (cartAmount / 100) * 5;
     final double shippingFee = 30;
     final double total = (cartAmount + tax + shippingFee) - discount;
-    String totalString = total.toStringAsFixed(2); // "123.45"
+    String totalString = total.toStringAsFixed(2);
     double totalRounded = double.parse(totalString);
+    final cartData = ref.watch(cartProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -209,6 +213,93 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
                 Row(
                   children: [
+                    Icon(Icons.CupertinoIcons.cube_box),
+                    SizedBox(width: 10),
+                    Text(
+                      "Your Items",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 15),
+
+                ListView.builder(
+                  itemCount: cartData.length,
+                  shrinkWrap: true,
+
+                  itemBuilder: (context, index) {
+                    final cartItem = cartData.values.toList()[index];
+                    return InkWell(
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        height: 95,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 78,
+                              height: 78,
+                              child: Image.network(cartItem.image[0]),
+                            ),
+                            SizedBox(width: 10),
+
+                            Icons.Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icons.Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: 78,
+                                  child: SizedBox(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          cartItem.productName,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "₹${cartItem.productPrice}"
+                                              .toString(),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.pink,
+                                          ),
+                                        ),
+                                        Text(
+                                          cartItem.category,
+                                          style: TextStyle(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                SizedBox(height: 35),
+
+                Row(
+                  children: [
                     Icon(Icons.CupertinoIcons.ticket),
                     SizedBox(width: 10),
                     Text(
@@ -319,60 +410,65 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 ),
                 SizedBox(height: 15),
 
-                InkWell(
-                  onTap: () {},
-                  child: SizedBox(
-                    width: 335,
-                    height: 74,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          child: Container(
-                            width: 335,
-                            height: 74,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              border: Border.all(
-                                color: const Color(0xFFEFF0F2),
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 15,
-                          top: 8,
-                          child: Text("Card Name",style: TextStyle(fontSize: 12),)),
-                        Positioned(
-                          left: 15,
-                          top: 30,
-                          child: Stack(
-                            children: [
-                              Image.asset(
-                                "assets/icons/password.png",
-                                height: 25,
-                                width: 25,
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Positioned(
-                          left: 305,
-                          top: 25,
-                          child: Image.network(
-                            width: 20,
-                            height: 20,
-                            'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fnn2Ldqjoc2Xp89Y7Wfzf%2F6ce18a0efc6e889de2f2878027c689c9caa53feeedit%201.png?alt=media&token=a3a8a999-80d5-4a2e-a9b7-a43a7fa8789a',
-                          ),
-                        ),
-                      ],
+                Container(
+                  width: 335,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFEFF0F2)),
+                  ),
+                  child: ExpansionTile(
+                    tilePadding: const EdgeInsets.symmetric(horizontal: 15),
+                    title: const Text(
+                      "Payment Method",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
+                    leading: Image.asset(
+                      "assets/icons/password.png",
+                      height: 25,
+                      width: 25,
+                    ),
+                    children: [
+                      CheckboxListTile(
+                        title: const Text("UPI"),
+                        value: selectedPayment == "upi",
+                        activeColor: Colors.green, 
+                        checkColor: Colors.white,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedPayment = "upi";
+                          });
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: const Text("Card"),
+                        value: selectedPayment == "Card",
+                        activeColor: Colors.green, 
+                        checkColor: Colors.white,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedPayment = "Card";
+                          });
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: const Text("Cash on Delivery"),
+                        value: selectedPayment == "COD",
+                        activeColor: Colors.green,
+                        checkColor: Colors.white,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedPayment = "COD";
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
+
                 SizedBox(height: 40),
                 Container(
                   height: 5,
@@ -387,7 +483,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       children: [
                         Text("SubTotal       :"),
                         Text(
-                          "${cartAmount.toString()}",
+                          "₹${cartAmount.toString()}",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -407,7 +503,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       children: [
                         Text("Tax                :"),
                         Text(
-                          tax.toString(),
+                          "${tax.toString()}",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -417,7 +513,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       children: [
                         Text("Discount       :"),
                         Text(
-                          discount.toString(),
+                          "- ${discount.toString()}",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -430,37 +526,39 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Total   :",
+                      "Total Amount   :",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     Text(
-                      totalRounded.toString(),
+                      "₹${totalRounded.toString()}",
                       style: TextStyle(fontWeight: FontWeight.w800),
                     ),
                   ],
                 ),
-                Icons.Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 40,
-                    width: 350,
-                    decoration: BoxDecoration(
-                      color: const Icons.Color.fromARGB(255, 43, 234, 174),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Icons.Center(
-                      child: Text(
-                        "Pay Now",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
               ],
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: Icons.Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          height: 40,
+          width: 350,
+          decoration: BoxDecoration(
+            color: const Icons.Color.fromARGB(255, 43, 234, 174),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Icons.Center(
+            child: Text(
+              selectedPayment == "COD"?
+              "Confirm Order":
+              "Pay Now",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
             ),
           ),
         ),

@@ -194,7 +194,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                   child: SizedBox(
                                     height: 100,
                                     width: 100,
-                                    child: Image.asset(cartItem.image[0]),
+                                    child: Image.network(cartItem.image[0]),
                                   ),
                                 ),
                                 SizedBox(width: 20),
