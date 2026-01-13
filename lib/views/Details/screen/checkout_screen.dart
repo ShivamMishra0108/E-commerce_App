@@ -1,4 +1,6 @@
+import 'package:e_commerce_app/controllers/orderController.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
+import 'package:e_commerce_app/provider/user_provider.dart';
 import 'package:flutter/cupertino.dart' as Icons;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,7 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   String selectedPayment = "";
-
+  final OrderController _orderController = OrderController();
   @override
   Widget build(BuildContext context) {
     final cartAmount = ref.read(cartProvider.notifier).calculateTotalAmount();
@@ -25,6 +27,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     String totalString = total.toStringAsFixed(2);
     double totalRounded = double.parse(totalString);
     final cartData = ref.watch(cartProvider);
+    final _cartProvider = ref.read(cartProvider.notifier);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -435,7 +438,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       CheckboxListTile(
                         title: const Text("UPI"),
                         value: selectedPayment == "upi",
-                        activeColor: Colors.green, 
+                        activeColor: Colors.green,
                         checkColor: Colors.white,
                         onChanged: (value) {
                           setState(() {
@@ -446,7 +449,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       CheckboxListTile(
                         title: const Text("Card"),
                         value: selectedPayment == "Card",
-                        activeColor: Colors.green, 
+                        activeColor: Colors.green,
                         checkColor: Colors.white,
                         onChanged: (value) {
                           setState(() {
@@ -542,22 +545,47 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
       bottomNavigationBar: Icons.Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          height: 40,
-          width: 350,
-          decoration: BoxDecoration(
-            color: const Icons.Color.fromARGB(255, 43, 234, 174),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Icons.Center(
-            child: Text(
-              selectedPayment == "COD"?
-              "Confirm Order":
-              "Pay Now",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
+        child: InkWell(
+          onTap: () async {
+            if (selectedPayment == "COD") {
+              await Future.forEach(_cartProvider.getCartItems.entries, (entry) {
+                var item = entry.value;
+                _orderController.uploadOrder(
+                  id: ' ',
+                  fullName: ref.read(userProvider)!.fullName,
+                  email: ref.read(userProvider)!.email,
+                  state: ref.read(userProvider)!.state,
+                  city: ref.read(userProvider)!.city,
+                  locality: ref.read(userProvider)!.locality,
+                  productName: item.productName,
+                  productPrice: item.productPrice,
+                  quantity: item.quantity,
+                  category: item.category,
+                  image: item.image[0],
+                  buyerId: ref.read(userProvider)!.id,
+                  vendorId: item.vendorId,
+                  processing: true,
+                  delivered: false,
+                  context: context,
+                );
+              });
+            }
+          },
+          child: Container(
+            height: 40,
+            width: 350,
+            decoration: BoxDecoration(
+              color: const Icons.Color.fromARGB(255, 43, 234, 174),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Icons.Center(
+              child: Text(
+                selectedPayment == "COD" ? "Confirm Order" : "Pay Now",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),
