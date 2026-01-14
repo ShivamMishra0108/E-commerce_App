@@ -35,7 +35,7 @@ class AuthController {
         token: '',
       );
       http.Response response = await http.post(
-        Uri.parse('$uri/api/signup'),
+        Uri.parse('$uri/api/auth/signup'),
         body: user
             .toJson(), // Convert the user object to json for the request body
         headers: <String, String>{
@@ -72,7 +72,7 @@ class AuthController {
       print('Sending signin request...');
 
       http.Response response = await http.post(
-        Uri.parse('$uri/api/signin'),
+        Uri.parse('$uri/api/auth/signin'),
         body: jsonEncode({'email': email, 'password': password}),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

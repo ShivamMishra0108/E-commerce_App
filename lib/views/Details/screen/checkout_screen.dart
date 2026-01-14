@@ -1,6 +1,7 @@
 import 'package:e_commerce_app/controllers/orderController.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/provider/user_provider.dart';
+import 'package:e_commerce_app/views/Details/widgets/shipping_address.dart';
 import 'package:flutter/cupertino.dart' as Icons;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final cartAmount = ref.read(cartProvider.notifier).calculateTotalAmount();
+    final user = ref.watch(userProvider);
+
     final double discount = cartAmount / 10;
     final double tax = (cartAmount / 100) * 5;
     final double shippingFee = 30;
@@ -57,7 +60,16 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 Row(
                   children: [
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ShippingAddressScreen();
+                            },
+                          ),
+                        );
+                      },
                       child: SizedBox(
                         width: 300,
                         height: 96,
@@ -545,51 +557,76 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
       bottomNavigationBar: Icons.Padding(
         padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-          onTap: () async {
-            if (selectedPayment == "COD") {
-              await Future.forEach(_cartProvider.getCartItems.entries, (entry) {
-                var item = entry.value;
-                _orderController.uploadOrder(
-                  id: ' ',
-                  fullName: ref.read(userProvider)!.fullName,
-                  email: ref.read(userProvider)!.email,
-                  state: ref.read(userProvider)!.state,
-                  city: ref.read(userProvider)!.city,
-                  locality: ref.read(userProvider)!.locality,
-                  productName: item.productName,
-                  productPrice: item.productPrice,
-                  quantity: item.quantity,
-                  category: item.category,
-                  image: item.image[0],
-                  buyerId: ref.read(userProvider)!.id,
-                  vendorId: item.vendorId,
-                  processing: true,
-                  delivered: false,
-                  context: context,
-                );
-              });
-            }
-          },
-          child: Container(
-            height: 40,
-            width: 350,
-            decoration: BoxDecoration(
-              color: const Icons.Color.fromARGB(255, 43, 234, 174),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Icons.Center(
-              child: Text(
-                selectedPayment == "COD" ? "Confirm Order" : "Pay Now",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
+        child: ref.read(userProvider)!.state == ""
+            ? TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ShippingAddressScreen();
+                      },
+                    ),
+                  );
+                },
+                child: Text(
+                  "Please Enter Shipping Address",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              )
+            : InkWell(
+                onTap: () async {
+                  if (user == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("User not logged in")),
+                    );
+                    return;
+                  }
+                  if (selectedPayment == "COD") {
+                    await Future.forEach(_cartProvider.getCartItems.entries, (
+                      entry,
+                    ) {
+                      var item = entry.value;
+                      _orderController.uploadOrder(
+                        id: ' ',
+                        fullName: user.fullName,
+                        email: user.email,
+                        state: 'MP',
+                        city: 'Jabalpur',
+                        locality: 'Chungi',
+                        productName: item.productName,
+                        productPrice: item.productPrice,
+                        quantity: item.quantity,
+                        category: item.category,
+                        image: item.image[0],
+                        buyerId: user.id,
+                        vendorId: item.vendorId,
+                        processing: true,
+                        delivered: false,
+                        context: context,
+                      );
+                    });
+                  }
+                },
+                child: Container(
+                  height: 40,
+                  width: 350,
+                  decoration: BoxDecoration(
+                    color: const Icons.Color.fromARGB(255, 43, 234, 174),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Icons.Center(
+                    child: Text(
+                      selectedPayment == "COD" ? "Confirm Order" : "Pay Now",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

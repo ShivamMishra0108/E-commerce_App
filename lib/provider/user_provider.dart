@@ -49,10 +49,13 @@ class UserProvider extends StateNotifier<User?> {
   User? get user => state;
 
   // Setter from JSON string
-  void setUser(String userJson) {
-    state = User.fromJson(jsonDecode(userJson));
-  }
-
+  // void setUser(String userJson) {
+  //   state = User.fromJson(jsonDecode(userJson));
+  // }
+  void setUser(String userJson){
+      state = User.fromJson(userJson);
+    }
+  
   // Clear user
   void signOut() {
     state = null;
@@ -62,4 +65,6 @@ class UserProvider extends StateNotifier<User?> {
 // Provider definition
 final userProvider =
     StateNotifierProvider<UserProvider, User?>((ref) => UserProvider());
+
+    
 
