@@ -101,43 +101,87 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                         width: 219,
                                         child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            const Align(
+                                            Align(
                                               alignment: Alignment.centerLeft,
                                               child: SizedBox(
                                                 width: 114,
-                                                child: Text(
-                                                  'Add Adress',
+                                                child: user!.fullName.isNotEmpty? Text(
+                                                  user.fullName,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    height: 1.1,
+                                                  ),
+                                                ):
+                                                const Text(
+                                                  'Your Name',
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
                                                     height: 1.1,
                                                   ),
-                                                ),
+                                                )
                                               ),
                                             ),
-                                            const SizedBox(height: 4),
                                             Align(
                                               alignment: Alignment.centerLeft,
-                                              child: Text(
+                                              child: SizedBox(
+                                                width: 114,
+                                                child: user.locality.isNotEmpty? Text(
+                                                  user.locality,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                   
+                                                  ),
+                                                ):
+                                                const Text(
+                                                  'Add Adress',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                   
+                                                  ),
+                                                )
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: user.city.isNotEmpty? Text(
+                                                  user.city,
+                                                 style: GoogleFonts.lato(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 1.3,
+                                                ),
+                                                ):
+                                                 Text(
                                                 'United state',
                                                 style: GoogleFonts.lato(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
                                                   letterSpacing: 1.3,
                                                 ),
                                               ),
                                             ),
                                             Align(
                                               alignment: Alignment.centerLeft,
-                                              child: Text(
+                                              child: user.state.isNotEmpty? Text(
+                                                  user.state,
+                                                  style: GoogleFonts.lato(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12,
+                                                  
+                                                ),
+                                                ):
+                                                 Text(
                                                 'Enter city',
                                                 style: GoogleFonts.lato(
-                                                  color: const Color(
-                                                    0xFF7F808C,
-                                                  ),
-                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -552,29 +596,29 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: 
-        //  ref.watch(userProvider)!.state == ""?
-        //   TextButton(onPressed: (){
-        //     Navigator.push(context, MaterialPageRoute(builder: (context){
-        //       return ShippingAddressScreen();
-        //     }));
-        //   }, child: Text("Select your Delivery Address",
-        //   style: TextStyle(
-        //     fontWeight: FontWeight.bold,
+         user!.state.isEmpty?
+          TextButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return ShippingAddressScreen();
+            }));
+          }, child: Text("Select your Delivery Address",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
 
-        //   ),
-        //   )):
+          ),
+          )):
            InkWell(
           onTap: () async {
             if (selectedPayment == "COD") {
               await Future.forEach(_cartProvider.getCartItems.entries, (entry) {
                 var item = entry.value;
                 _orderController.uploadOrder(
-                  id: ' ',
-                  fullName: ' consumer',
-                  email: user!.email,
-                  state: 'MP',
-                  city: 'Jabalpur',
-                  locality: 'Chungi',
+                  id: user.id,
+                  fullName: user.fullName,
+                  email: user.email,
+                  state: user.state,
+                  city: user.city,
+                  locality: user.locality,
                   productName: item.productName,
                   productPrice: item.productPrice,
                   quantity: item.quantity,

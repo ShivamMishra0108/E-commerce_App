@@ -2,9 +2,8 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_riverpod/legacy.dart' show StateNotifier;
 
-
 // //Contctruvtor Initializing default user object:
- 
+
 // class UserProvider extends StateNotifier<User?> {
 //   UserProvider()
 //     : super(
@@ -30,16 +29,14 @@
 //       state = User.fromJson(userJson);
 //     }
 
-   
 // }
 //  //make the data accessible within the application:
 
 //     final userProvider = StateNotifierProvider<UserProvider, User?> ((ref) => UserProvider());
 
-  import 'dart:convert';
+import 'dart:convert';
 import 'package:e_commerce_app/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 // StateNotifier to manage user state
 class UserProvider extends StateNotifier<User?> {
@@ -57,9 +54,28 @@ class UserProvider extends StateNotifier<User?> {
   void signOut() {
     state = null;
   }
+
+  void recreateUserState({
+    required String state,
+    required String city,
+    required String locality,
+  }) {
+    if (this.state != null) {
+      this.state = User(
+        id: this.state!.id,
+        fullName: this.state!.fullName,
+        email: this.state!.email,
+        state: state,
+        city: city,
+        locality: locality,
+        password: this.state!.password,
+        token: this.state!.token,
+      );
+    }
+  }
 }
 
 // Provider definition
-final userProvider =
-    StateNotifierProvider<UserProvider, User?>((ref) => UserProvider());
-
+final userProvider = StateNotifierProvider<UserProvider, User?>(
+  (ref) => UserProvider(),
+);

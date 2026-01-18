@@ -69,6 +69,17 @@ class User {
   //fromJson:  This factory constructor takes json String and decodes into a map<String, dynamic>
   // and then uses fromMap to convert the map into user object.
 
-  factory User.fromJson(String source) =>
-      User.fromMap(json.decode(source) as Map<String, dynamic>);
+  // factory User.fromJson(String source) =>
+  //     User.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory User.fromJson(dynamic source) {
+  if (source is String) {
+    return User.fromMap(json.decode(source));
+  } else if (source is Map<String, dynamic>) {
+    return User.fromMap(source);
+  } else {
+    throw Exception('Invalid user data');
+  }
+}
+
 }

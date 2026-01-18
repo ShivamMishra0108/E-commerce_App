@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 final providerContainer = ProviderContainer();
+
 class AuthController {
   void showSnackBar(BuildContext context, String title) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(title)));
@@ -37,8 +38,8 @@ class AuthController {
       );
       http.Response response = await http.post(
         Uri.parse('$uri/api/signup'),
-       body: jsonEncode(user.toJson()),
- // Convert the user object to json for the request body
+        body: jsonEncode(user.toJson()),
+        // Convert the user object to json for the request body
         headers: <String, String>{
           // Set the headers to the request
           "content-type":
@@ -85,26 +86,25 @@ class AuthController {
       manageHttpResponse(
         response: response,
         context: context,
-        onSuccess: ()async {
+        onSuccess: () async {
           // Access sharedPreference for auth token and user data storage:
-          SharedPreferences preferencres = await SharedPreferences.getInstance();
+          SharedPreferences preferencres =
+              await SharedPreferences.getInstance();
 
           // Extract te auth token from the response body:
           String token = jsonDecode(response.body)['token'];
 
           //Store the auth token securely in shaered preferences:
           await preferencres.setString('auth_token', token);
-         
+
           // Encode the user fdata recideved from backend as json:
-          String userJson =
-          jsonEncode(jsonDecode(response.body)['user']);
+          String userJson = jsonEncode(jsonDecode(response.body)['user']);
 
           //Update the application state with user data from riverpod:
           providerContainer.read(userProvider.notifier).setUser(userJson);
 
           //Store the data in hsaredPreferences for future use:
           await preferencres.setString('user', userJson);
-
 
           Navigator.pushAndRemoveUntil(
             context,
@@ -121,25 +121,31 @@ class AuthController {
 
   // SignOut
 
-  Future<void> signOutUser({required, context})async{
+  Future<void> signOutUser({required, context}) async {
     try {
-   SharedPreferences preferences = await SharedPreferences.getInstance();
+      SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    // Clear the token and user from shared preferences:
-    preferences.remove('auth_token');
-    preferences.remove('user');
+      // Clear the token and user from shared preferences:
+      preferences.remove('auth_token');
+      preferences.remove('user');
 
-    // Clear the user data
-    providerContainer.read(userProvider.notifier).signOut();
+      // Clear the user data
+      providerContainer.read(userProvider.notifier).signOut();
 
-    // Navigate to login screen
+      // Navigate to login screen
 
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
-      return LoginScreen();
-    }), (route) => false);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return LoginScreen();
+          },
+        ),
+        (route) => false,
+      );
 
-    showSnackBar(context, "SignOut Successfulle");
-    }catch (e) {
+      showSnackBar(context, "SignOut Successfulle");
+    } catch (e) {
       showSnackBar(context, "Error SigninOut");
     }
   }
@@ -149,33 +155,32 @@ class AuthController {
     required id,
     required state,
     required city,
-    required locality
-  })async{
+    required locality,
+  }) async {
     try {
-      final http.Response response = await http.put(Uri.parse('$uri/api/user/$id'),
-       headers: <String, String>{
+      final http.Response response = await http.put(
+        Uri.parse('$uri/api/user/$id'),
+        headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
         },
-      body: jsonEncode({
-        'state':state,
-        'city':city,
-        'locality':locality,
-      }),
-    );
+        body: jsonEncode({'state': state, 'city': city, 'locality': locality}),
+      );
 
-    manageHttpResponse(
-      response: response,
-       context: context, onSuccess: ()async{
-        final updatedUser = jsonDecode(response.body);
+      manageHttpResponse(
+        response: response,
+        context: context,
+        onSuccess: () async {
+          final updatedUser = jsonDecode(response.body);
 
-        SharedPreferences preferences = await SharedPreferences.getInstance();
+          SharedPreferences preferences = await SharedPreferences.getInstance();
 
-        final userJson = jsonEncode(updatedUser);
+          final userJson = jsonEncode(updatedUser);
 
-        providerContainer.read(userProvider.notifier).setUser(userJson);
+          providerContainer.read(userProvider.notifier).setUser(userJson);
 
-        await preferences.setString('user', userJson);
-       });
+          await preferences.setString('user', userJson);
+        },
+      );
     } catch (e) {
       showSnackBar(context, "Error updating location");
     }
