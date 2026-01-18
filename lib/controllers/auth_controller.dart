@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/user.dart';
@@ -36,8 +37,8 @@ class AuthController {
       );
       http.Response response = await http.post(
         Uri.parse('$uri/api/signup'),
-        body: user
-            .toJson(), // Convert the user object to json for the request body
+       body: jsonEncode(user.toJson()),
+ // Convert the user object to json for the request body
         headers: <String, String>{
           // Set the headers to the request
           "content-type":
@@ -140,6 +141,43 @@ class AuthController {
     showSnackBar(context, "SignOut Successfulle");
     }catch (e) {
       showSnackBar(context, "Error SigninOut");
+    }
+  }
+
+  Future<void> updateUserLocation({
+    required context,
+    required id,
+    required state,
+    required city,
+    required locality
+  })async{
+    try {
+      final http.Response response = await http.put(Uri.parse('$uri/api/user/$id'),
+       headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+      body: jsonEncode({
+        'state':state,
+        'city':city,
+        'locality':locality,
+      }),
+    );
+
+    manageHttpResponse(
+      response: response,
+       context: context, onSuccess: ()async{
+        final updatedUser = jsonDecode(response.body);
+
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+
+        final userJson = jsonEncode(updatedUser);
+
+        providerContainer.read(userProvider.notifier).setUser(userJson);
+
+        await preferences.setString('user', userJson);
+       });
+    } catch (e) {
+      showSnackBar(context, "Error updating location");
     }
   }
 }

@@ -41,7 +41,7 @@ class OrderController {
         delivered: delivered,
       );
 
-      http.Response response = await http.post(Uri.parse('$uri/api/order'),
+      http.Response response = await http.post(Uri.parse('$uri/api/orders'),
       body: order.toJson(),
        headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
