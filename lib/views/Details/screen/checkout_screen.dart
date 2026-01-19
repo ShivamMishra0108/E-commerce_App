@@ -596,7 +596,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: 
-         user!.state.isEmpty?
+         user.state.isEmpty?
           TextButton(onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context){
               return ShippingAddressScreen();

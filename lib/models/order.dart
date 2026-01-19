@@ -55,6 +55,8 @@ class Order {
     };
   }
 
+  String toJson() => json.encode(toMap());
+
   factory Order.fromJson(Map<String, dynamic> map) {
     return Order(
       id: map['_id'] ?? '',
@@ -75,5 +77,5 @@ class Order {
       );
   }
 
-  String toJson() => json.encode(toMap());
+ 
 }

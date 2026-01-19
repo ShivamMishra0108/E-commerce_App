@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/user.dart';
