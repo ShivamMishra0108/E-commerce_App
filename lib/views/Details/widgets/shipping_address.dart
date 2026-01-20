@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ShippingAddressScreen extends StatefulWidget {
-  const ShippingAddressScreen({super.key});
+class ShippingAddress extends StatefulWidget {
+  const ShippingAddress({super.key});
 
   @override
-  State<ShippingAddressScreen> createState() => _ShippingAddressScreenState();
+  State<ShippingAddress> createState() => _ShippingAddressScreenState();
 }
 
-class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
+class _ShippingAddressScreenState extends State<ShippingAddress> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _stateController = TextEditingController();

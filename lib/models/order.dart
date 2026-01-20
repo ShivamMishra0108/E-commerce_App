@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 class Order {
@@ -35,47 +36,49 @@ class Order {
     required this.delivered,
   });
 
+  factory Order.fromJson(Map<String, dynamic> map) {
+    return Order(
+      id: map['_id'] ?? '',
+      fullName: map['fullName'] ?? '',
+      email: map['email'] ?? '',
+      state: map['state'] ?? '',
+      city: map['city'] ?? '',
+      locality: map['locality'] ?? '',
+      productName: map['productName'] ?? '',
+      productPrice: map['productPrice'] is int
+          ? map['productPrice']
+          : int.tryParse(map['productPrice'].toString()) ?? 0,
+      quantity: map['quantity'] is int
+          ? map['quantity']
+          : int.tryParse(map['quantity'].toString()) ?? 0,
+      category: map['category'] ?? '',
+      image: map['image'] ?? '',
+      buyerId: map['buyerId'] ?? '',
+      vendorId: map['vendorId'] ?? '',
+      processing: map['processing'] ?? false,
+      delivered: map['delivered'] ?? false,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      '_id': id,
       'fullName': fullName,
       'email': email,
       'state': state,
-       'city': city,
+      'city': city,
       'locality': locality,
       'productName': productName,
       'productPrice': productPrice,
-       'quantity': quantity,
+      'quantity': quantity,
       'category': category,
       'image': image,
       'buyerId': buyerId,
-       'vendorId': vendorId,
+      'vendorId': vendorId,
       'processing': processing,
       'delivered': delivered,
     };
   }
 
   String toJson() => json.encode(toMap());
-
-  factory Order.fromJson(Map<String, dynamic> map) {
-    return Order(
-      id: map['_id'] ?? '',
-      fullName: map['categoryId'] ?? '',
-      email: map['image'] ?? '',
-      state: map['categoryName'] ?? '',
-      city: map['subCategoryName'] ?? '',
-       locality: map['_id'] ?? '',
-      productName: map['categoryId'] ?? '',
-      productPrice: map['image'] ?? '',
-      quantity: map['categoryName'] ?? '',
-      category: map['subCategoryName'] ?? '',
-       image: map['_id'] ?? '',
-      buyerId: map['categoryId'] ?? '',
-      vendorId: map['image'] ?? '',
-      processing: map['categoryName'] ?? '',
-       delivered: map['_id'] ?? '',
-      );
-  }
-
- 
 }

@@ -61,7 +61,7 @@ class OrderController {
 
   Future<List<Order>> loadOrders({required String buyerId})async{
     try {
-       http.Response response = await http.get(Uri.parse("$uri/api/orders/$buyerId"),
+       http.Response response = await http.get(Uri.parse('$uri/api/orders/$buyerId'),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
         },
@@ -79,7 +79,7 @@ class OrderController {
       }
        
     } catch (e) {
-      throw Exception("Error loading Orders");
+      throw Exception("Error loading Orders $e");
     }
   }
 }

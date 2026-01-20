@@ -14,41 +14,110 @@ class OrderScreen extends ConsumerStatefulWidget {
 
 class _OrderScreenState extends ConsumerState<OrderScreen> {
   @override
-  void initState (){
+  void initState() {
     super.initState();
     fetchOrders();
   }
 
-Future<void> fetchOrders()async{
-  final user = ref.read(userProvider);
+  Future<void> fetchOrders() async {
+    final user = ref.read(userProvider);
 
-  if(user != null){
-    OrderController orderController = OrderController();
+    print("FLUTTER buyerId: ${user?.id}");
 
-    try {
-      final orders = await orderController.loadOrders(buyerId: user.id);
-      ref.read(orderProvider.notifier).setOrders(orders);
-    } catch (e) {
-      print("Error fetching orders $e");
+    if (user != null) {
+      OrderController orderController = OrderController();
+
+      try {
+        final orders = await orderController.loadOrders(buyerId: user.id);
+        ref.read(orderProvider.notifier).setOrders(orders);
+      } catch (e) {
+        print("Error fetching orders $e ");
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
     final orders = ref.watch(orderProvider);
+
     return Scaffold(
-      body: orders.isEmpty?
-      Center(child: Text("No Orders Found"),
-      ):
-      ListView.builder(
-        itemCount: orders.length,
-        itemBuilder: (context, index){
-        final Order order = orders[index];
-        return ListTile(
-          title:  Text(order.productName),
-        );
-      })
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "My Orders",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: orders.isEmpty
+          ? Center(child: Text("No Orders Found"))
+          : ListView.builder(
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                final Order order = orders[index];
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Container(
+                        height: 100,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.network(
+                                order.image,
+                                height: 60,
+                                width: 60,
+                              ),
+                            ),
+                            SizedBox(width: 15),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  order.productName,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+
+                                Text(order.category),
+
+                                Text(
+                                  "${order.productPrice}",
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                              ],
+                            ),
+                            Stack(
+                              children:[ Positioned(
+                                top: 380,
+                                left: 500,
+                                child: order.delivered
+                                    ? Text(
+                                        "✅Delivered",
+                                        style: TextStyle(
+                                          color: Colors.green,fontSize: 14,
+                                          ),
+                                      )
+                                    : Text(
+                                        "Not Delivered",
+                                        style: TextStyle(color: Colors.pink, fontSize: 10,),
+                                      ),
+                              ),
+                              ]
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
     );
   }
 }

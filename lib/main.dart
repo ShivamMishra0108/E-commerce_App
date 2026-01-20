@@ -64,11 +64,9 @@ class MyApp extends ConsumerWidget {
         }
         final user = ref.watch(userProvider);
 
-<<<<<<< HEAD
         return user ==null? LoginScreen(): MainScreen();
-=======
-        return user!=null? MainScreen(): LoginScreen();
->>>>>>> 05668c38dc49281dff192573d4c93d745e2e68c9
+
+
        })
     );
   }

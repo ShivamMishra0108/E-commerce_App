@@ -35,6 +35,7 @@
 //     final userProvider = StateNotifierProvider<UserProvider, User?> ((ref) => UserProvider());
 
 import 'dart:convert';
+
 import 'package:e_commerce_app/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,12 +47,12 @@ class UserProvider extends StateNotifier<User?> {
   User? get user => state;
 
   // Setter from JSON string
-  // void setUser(String userJson) {
-  //   state = User.fromJson(jsonDecode(userJson));
-  // }
-  void setUser(String userJson){
-      state = User.fromJson(userJson);
-    }
+  void setUser(String userJson) {
+    state = User.fromJson(jsonDecode(userJson));
+  }
+  // void setUser(String userJson){
+  //     state = User.fromJson(userJson);
+  //   }
   
   // Clear user
   void signOut() {
@@ -79,14 +80,9 @@ class UserProvider extends StateNotifier<User?> {
 }
 
 // Provider definition
-<<<<<<< HEAD
+
 final userProvider = StateNotifierProvider<UserProvider, User?>(
   (ref) => UserProvider(),
 );
-=======
-final userProvider =
-    StateNotifierProvider<UserProvider, User?>((ref) => UserProvider());
 
-    
 
->>>>>>> 05668c38dc49281dff192573d4c93d745e2e68c9

@@ -38,10 +38,16 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Delivery Address"),
         backgroundColor: Colors.white,
         centerTitle: true,
+        elevation: 1,
+        title: const Text(
+          "Delivery Address",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -54,7 +60,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                 Text(
                   "Enter Where Your Order will be placed",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     letterSpacing: 1.7,
                     fontWeight: FontWeight.bold,
                     color: const Color.fromARGB(255, 31, 12, 79),
@@ -64,6 +70,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                 SizedBox(height: 30),
 
                 TextFormField(
+                  
                   controller: _stateController,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -71,10 +78,14 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(hint: Text("Enter State")),
+                  decoration: const InputDecoration(
+                  labelText: "State",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.map),
+                ),
                 ),
 
-                SizedBox(height: 10),
+                SizedBox(height: 18),
 
                 TextFormField(
                   controller: _cityController,
@@ -84,9 +95,13 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(hint: Text("Enter City")),
+                  decoration: const InputDecoration(
+                  labelText: "City",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.location_city),
                 ),
-                SizedBox(height: 10),
+                ),
+                SizedBox(height: 18),
 
                 TextFormField(
                   controller: _localityController,
@@ -96,7 +111,11 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(labelText: "Enter Locality"),
+                  decoration: const InputDecoration(
+                  labelText: "Locality / Street",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.home),
+                ),
                 ),
               ],
             ),
@@ -138,7 +157,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
             decoration: BoxDecoration(color: Colors.blue),
             child: Center(
               child: Text(
-                "Save",
+                "Save Address",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
