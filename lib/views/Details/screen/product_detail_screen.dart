@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
@@ -17,16 +19,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Widget build(BuildContext context) {
     final _cartProvider = ref.read(cartProvider.notifier);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Product Details',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.favorite_outline)),
-        ],
-      ),
+    backgroundColor: Colors.white,
       body: Column(
         children: [
           Container(
@@ -49,8 +42,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.menu),
-                          onPressed: () {},
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                         ),
                         const SizedBox(width: 16),
                         const Text(
@@ -152,24 +147,34 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         Widget productImage = widget.product.images.isNotEmpty
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
-                                child: Image.network(
-                                  widget.product.images.first,
-                                  width: double.infinity,
-                                  height: isWide ? 420 : 120,
-                                  fit: BoxFit.cover,
-                                  loadingBuilder: (context, child, progress) {
-                                    if (progress == null) return child;
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(
-                                      Icons.broken_image,
-                                      size: 100,
-                                      color: Colors.grey,
-                                    );
-                                  },
+                                child: Container(
+                                  color: Colors.grey.shade200,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 400,
+                                  child: Center(
+                                    child: Image.network(
+                                      widget.product.images.first,
+                                      width: 300,
+                                      height: 300,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder:
+                                          (context, child, progress) {
+                                            if (progress == null) return child;
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return const Icon(
+                                              Icons.broken_image,
+                                              size: 100,
+                                              color: Colors.grey,
+                                            );
+                                          },
+                                    ),
+                                  ),
                                 ),
                               )
                             : Container(
@@ -183,14 +188,75 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 ),
                               );
 
+                        Widget productInfo(Product product) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(width: 5,),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                 mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    // PRODUCT NAME
+                                    Text(
+                                      product.productName,
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        letterSpacing: 2,
+                                      ),
+                                    ),
+                                
+                                    const SizedBox(height: 8),
+                                
+                                    // PRICE
+                                    Text(
+                                      "\$${product.productPrice}",
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                
+                                    const SizedBox(height: 16),
+                                
+                                  
+                                   
+                                    const SizedBox(height: 8),
+                                
+                                    // DESCRIPTION
+                                    Text(
+                                      product.description,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        height: 1.6,
+                                        color: Color(0xFF4B5563),
+                                      ),
+                                    ),
+                                     Text(
+                                      "Add to Cart",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        height: 1.6,
+                                        color: Color(0xFF4B5563),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+
                         if (isWide) {
                           /// Desktop / Tablet layout
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(child: productImage),
+                              SizedBox(child: productImage),
                               const SizedBox(width: 32),
-                              //Expanded(child: ProductInfo(data: productData)),
+                              SizedBox(child: productInfo(widget.product)),
                             ],
                           );
                         } else {
@@ -200,7 +266,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             children: [
                               productImage,
                               const SizedBox(height: 24),
-                              //ProductInfo(data: productData),
+                              productInfo(widget.product),
+                              const SizedBox(height: 100),
+
                             ],
                           );
                         }
@@ -230,7 +298,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               quantity: 1,
             );
 
-            showSnackBar(context, "${widget.product.productName} Added to Cart");
+            showSnackBar(
+              context,
+              "${widget.product.productName} Added to Cart",
+            );
           },
           child: Container(
             height: 50,
