@@ -49,8 +49,11 @@ class _BannerWidgetState extends State<BannerWidget> {
         height: 170,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color:  Colors.white
+          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(9),
         ),
         child: banners.isEmpty
             ? const Center(child: CircularProgressIndicator())
@@ -67,10 +70,13 @@ class _BannerWidgetState extends State<BannerWidget> {
                   final banner = banners[index];
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(4),
-                    child: Image.network(
-                      banner.image,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(
+                        banner.image,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
                     ),
                   );
                 },

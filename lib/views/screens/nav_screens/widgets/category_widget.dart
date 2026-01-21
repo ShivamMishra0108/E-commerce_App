@@ -1,42 +1,49 @@
 import 'package:e_commerce_app/controllers/category_controller.dart';
-import 'package:e_commerce_app/models/category_models.dart';
+import 'package:e_commerce_app/provider/category_provider.dart';
 import 'package:e_commerce_app/views/Details/screen/innerr_category_screen.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/reuseable_textWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CategoryWidget extends StatefulWidget {
+class CategoryWidget extends ConsumerStatefulWidget {
   const CategoryWidget({super.key});
 
   @override
-  State<CategoryWidget> createState() => _CategoryWidgetState();
+  _CategoryWidgetState createState() => _CategoryWidgetState();
 }
 
-class _CategoryWidgetState extends State<CategoryWidget> {
-  late Future<List<Category>> futureCategories;
+class _CategoryWidgetState extends ConsumerState<CategoryWidget> {
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    futureCategories = CategoryController().loadCategories();
+
+    fetchCategory();
+   
   }
+
+  Future<void> fetchCategory()async{
+    final CategoryController _categoryController = CategoryController();
+    try {
+      final categories = await _categoryController.loadCategories();
+
+      ref.read(categoryProvider.notifier).SetCategory(categories);
+
+    } catch (e) {
+      
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoryProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextWidget(title: "Categories", subtitle: "View All"),
-        FutureBuilder(
-          future: futureCategories,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No categories"));
-            } else {
-              final categories = snapshot.data!;
-              return GridView.builder(
+       GridView.builder(
                 shrinkWrap: true,
                 itemCount: categories.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -65,10 +72,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                     ),
                   );
                 },
-              );
-            }
-          },
-        ),
+              )
       ],
     );
   }

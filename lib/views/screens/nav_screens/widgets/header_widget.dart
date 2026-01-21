@@ -51,6 +51,16 @@ class HeaderWidget extends StatelessWidget {
             ),
           ),
           Positioned(
+            left: 12,
+            top: 71,
+            child: InkWell(
+              onTap: () {
+                
+
+              },
+              child: Icon(Icons.menu,color: Colors.white,))
+          ),
+          Positioned(
             left: 330,
             top: 78,
             child: Material(

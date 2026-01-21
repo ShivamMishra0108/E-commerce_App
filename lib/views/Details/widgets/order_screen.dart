@@ -41,11 +41,102 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
     final orders = ref.watch(orderProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "My Orders",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(
+          MediaQuery.of(context).size.height * 0.20,
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 118,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/icons/cartb.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          child: Stack(
+            children: [
+              Positioned(
+                left: 360,
+                top: 52,
+                child: Stack(
+                  children: [
+                    Image.asset("assets/icons/not.png", height: 25, width: 25),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        height: 15,
+                        width: 15,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            orders.length.toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 7,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                left: 60,
+                top: 51,
+                child: Text(
+                  "My Cart",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 20,
+                top: 51,
+                child: Stack(
+                  children: [
+                    Image.asset("assets/icons/cart.png", height: 25, width: 25),
+                  ],
+                ),
+              ),
+              Positioned(
+                left: 160,
+                top: 51,
+                child: SizedBox(
+              height: 38,
+              width: 180,
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Search Your Order",
+                  hintStyle: TextStyle(color: Colors.black, fontSize: 13),
+                  
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 16,
+                  ),
+
+                  prefixIcon: Image.asset("assets/icons/search.png"),
+                  
+                  fillColor: Colors.grey.shade200,
+                  filled: true,
+                  focusColor: Colors.black,
+                ),
+              ),
+            ),)
+            ],
+          ),
         ),
       ),
       body: orders.isEmpty
@@ -66,6 +157,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                           border: Border.all(color: Colors.black),
                         ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -92,24 +184,59 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                 ),
                               ],
                             ),
-                            Stack(
-                              children:[ Positioned(
-                                top: 380,
-                                left: 500,
-                                child: order.delivered
-                                    ? Text(
-                                        "✅Delivered",
-                                        style: TextStyle(
-                                          color: Colors.green,fontSize: 14,
-                                          ),
-                                      )
-                                    : Text(
-                                        "Not Delivered",
-                                        style: TextStyle(color: Colors.pink, fontSize: 10,),
+                            SizedBox(width: 12),
+
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      height: 14,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(2),
+                                        color: Colors.purple,
                                       ),
+                                      child: Center(
+                                        child: Text(
+                                          order.processing
+                                              ? "Processing"
+                                              : "Order Placed",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  order.delivered
+                                      ? Text(
+                                          "delivered",
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 13,
+                                          ),
+                                        )
+                                      : Text(
+                                          "Not Delivered",
+                                          style: TextStyle(
+                                            color: Colors.pink,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+
+                                  Image.asset(
+                                    "assets/icons/delete.png",
+                                    height: 25,
+                                    width: 25,
+                                  ),
+                                ],
                               ),
-                              ]
                             ),
+                            SizedBox(width: 10),
                           ],
                         ),
                       ),
