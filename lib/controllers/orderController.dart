@@ -43,43 +43,67 @@ class OrderController {
         delivered: delivered,
       );
 
-      http.Response response = await http.post(Uri.parse('$uri/api/orders'),
-      body: order.toJson(),
-       headers: <String, String>{
+      http.Response response = await http.post(
+        Uri.parse('$uri/api/orders'),
+        body: order.toJson(),
+        headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
         },
       );
-      manageHttpResponse(response: response, context: context, onSuccess: (){
-        showSnackBar(context, "You have placed an order");
-      });
+      manageHttpResponse(
+        response: response,
+        context: context,
+        onSuccess: () {
+          showSnackBar(context, "You have placed an order");
+        },
+      );
     } catch (e) {
       showSnackBar(context, e.toString());
     }
   }
 
-
-
-  Future<List<Order>> loadOrders({required String buyerId})async{
+  Future<List<Order>> loadOrders({required String buyerId}) async {
     try {
-       http.Response response = await http.get(Uri.parse('$uri/api/orders/$buyerId'),
+      http.Response response = await http.get(
+        Uri.parse('$uri/api/orders/$buyerId'),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
         },
       );
-      if(response.statusCode == 200){
-
+      if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
 
-        List<Order> orders = data.map((order) => Order.fromJson(order)).toList();
+        List<Order> orders = data
+            .map((order) => Order.fromJson(order))
+            .toList();
 
         return orders;
-      }
-      else{
+      } else {
         throw Exception("Failed to load Orders");
       }
-       
     } catch (e) {
       throw Exception("Error loading Orders $e");
+    }
+  }
+
+  Future<void> deleteOrders({required String id, required context}) async {
+    try {
+      http.Response response = await http.delete(
+        Uri.parse("$uri/api/orders/delete/$id"),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+      );
+
+      manageHttpResponse(
+        response: response,
+        context: context,
+        onSuccess: () {
+          showSnackBar(context, "Deleted Successfully");
+        },
+      );
+    } catch (e) {
+      print("Error deleting order: $e");
     }
   }
 }

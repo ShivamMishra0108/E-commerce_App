@@ -1,3 +1,4 @@
+import 'package:e_commerce_app/controllers/orderController.dart';
 import 'package:e_commerce_app/models/order.dart';
 import 'package:e_commerce_app/views/Details/screen/checkout_screen.dart';
 import 'package:flutter/material.dart';
@@ -305,7 +306,7 @@ class OrderDetailScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 18),
                       ),
 
-                      SizedBox(height: 10,),
+                      SizedBox(height: 10),
                       Text(
                         "Get Invoice",
                         style: TextStyle(color: Colors.blue, fontSize: 16),
@@ -331,7 +332,13 @@ class OrderDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text("Add Review:", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
+                      Text(
+                        "Add Review:",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       SizedBox(height: 10),
                       SizedBox(
                         height: 44,
