@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
+  static var selectedPayment;
+
   const CheckoutScreen({super.key});
 
   @override

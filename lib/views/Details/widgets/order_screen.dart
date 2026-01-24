@@ -2,6 +2,7 @@ import 'package:e_commerce_app/controllers/orderController.dart';
 import 'package:e_commerce_app/models/order.dart';
 import 'package:e_commerce_app/provider/order_provider.dart';
 import 'package:e_commerce_app/provider/user_provider.dart';
+import 'package:e_commerce_app/views/Details/screen/order_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -41,6 +42,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
     final orders = ref.watch(orderProvider);
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
           MediaQuery.of(context).size.height * 0.20,
@@ -148,96 +150,102 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                 return Column(
                   children: [
                     ListTile(
-                      title: Container(
-                        height: 100,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.network(
-                                order.image,
-                                height: 60,
-                                width: 60,
+                      title: InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return OrderDetailScreen(order: order);
+                          }));
+                        },
+                        child: Container(
+                          height: 100,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.network(
+                                  order.image,
+                                  height: 60,
+                                  width: 60,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 15),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  order.productName,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-
-                                Text(order.category),
-
-                                Text(
-                                  "${order.productPrice}",
-                                  style: TextStyle(color: Colors.green),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: 12),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
+                              SizedBox(width: 15),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      height: 14,
-                                      width: 60,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(2),
-                                        color: Colors.purple,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          order.processing
-                                              ? "Processing"
-                                              : "Order Placed",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 10,
+                                  Text(
+                                    order.productName,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                        
+                                  Text(order.category),
+                        
+                                  Text(
+                                    "${order.productPrice}",
+                                    style: TextStyle(color: Colors.green),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 12),
+                        
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 14,
+                                        width: 60,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(2),
+                                          color: Colors.blue,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            order.processing
+                                                ? "Processing"
+                                                : "Order Placed",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  order.delivered
-                                      ? Text(
-                                          "delivered",
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                            fontSize: 13,
+                                    order.delivered
+                                        ? Text(
+                                            "delivered",
+                                            style: TextStyle(
+                                              color: Colors.green,
+                                              fontSize: 13,
+                                            ),
+                                          )
+                                        : Text(
+                                            "Not Delivered",
+                                            style: TextStyle(
+                                              color: Colors.pink,
+                                              fontSize: 13,
+                                            ),
                                           ),
-                                        )
-                                      : Text(
-                                          "Not Delivered",
-                                          style: TextStyle(
-                                            color: Colors.pink,
-                                            fontSize: 13,
-                                          ),
-                                        ),
-
-                                  Image.asset(
-                                    "assets/icons/delete.png",
-                                    height: 25,
-                                    width: 25,
-                                  ),
-                                ],
+                        
+                                    Image.asset(
+                                      "assets/icons/delete.png",
+                                      height: 25,
+                                      width: 25,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 10),
-                          ],
+                              SizedBox(width: 10),
+                            ],
+                          ),
                         ),
                       ),
                     ),

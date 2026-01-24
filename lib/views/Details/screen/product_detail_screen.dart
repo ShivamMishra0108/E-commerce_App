@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';

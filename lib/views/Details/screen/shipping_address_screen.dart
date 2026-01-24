@@ -85,7 +85,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                 ),
                 ),
 
-                SizedBox(height: 18),
+                SizedBox(height: 20),
 
                 TextFormField(
                   controller: _cityController,
@@ -101,7 +101,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   prefixIcon: Icon(Icons.location_city),
                 ),
                 ),
-                SizedBox(height: 18),
+                SizedBox(height: 20),
 
                 TextFormField(
                   controller: _localityController,
@@ -154,7 +154,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
           child: Container(
             height: 50,
             width: 300,
-            decoration: BoxDecoration(color: Colors.blue),
+            decoration: BoxDecoration(color: const Color.fromARGB(255, 16, 188, 100)),
             child: Center(
               child: Text(
                 "Save Address",
