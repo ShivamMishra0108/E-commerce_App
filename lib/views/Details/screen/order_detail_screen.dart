@@ -1,13 +1,30 @@
-import 'package:e_commerce_app/controllers/orderController.dart';
+import 'package:e_commerce_app/controllers/product_review_controller.dart';
 import 'package:e_commerce_app/models/order.dart';
 import 'package:e_commerce_app/views/Details/screen/checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:custom_rating_bar/custom_rating_bar.dart';
 
-class OrderDetailScreen extends StatelessWidget {
+class OrderDetailScreen extends StatefulWidget {
   final Order order;
 
   const OrderDetailScreen({super.key, required this.order});
+
+  @override
+  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+}
+
+class _OrderDetailScreenState extends State<OrderDetailScreen> {
+  final TextEditingController reviewController = TextEditingController();
+  double rating = 0.0;
+  final ProductReviewController productReviewController =
+      ProductReviewController();
+
+  @override
+  void dispose() {
+    reviewController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +32,7 @@ class OrderDetailScreen extends StatelessWidget {
       appBar: AppBar(
         // backgroundColor:  Color.fromARGB(255, 65, 194, 166),
         title: Text(
-          "${order.productName}",
+          "${widget.order.productName}",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
@@ -43,7 +60,7 @@ class OrderDetailScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Image.network(
-                          order.image,
+                          widget.order.image,
                           height: 60,
                           width: 60,
                         ),
@@ -55,14 +72,14 @@ class OrderDetailScreen extends StatelessWidget {
                           children: [
                             SizedBox(height: 10),
                             Text(
-                              order.productName,
+                              widget.order.productName,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
 
-                            Text(order.category),
+                            Text(widget.order.category),
 
                             Text(
-                              "₹${order.productPrice}",
+                              "₹${widget.order.productPrice}",
                               style: TextStyle(
                                 color: Color.fromARGB(255, 65, 194, 166),
                               ),
@@ -88,7 +105,7 @@ class OrderDetailScreen extends StatelessWidget {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    order.processing
+                                    widget.order.processing
                                         ? "Processing"
                                         : "Order Placed",
                                     style: TextStyle(
@@ -99,7 +116,7 @@ class OrderDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            !order.delivered
+                            !widget.order.delivered
                                 ? Container(
                                     height: 14,
                                     width: 60,
@@ -201,7 +218,7 @@ class OrderDetailScreen extends StatelessWidget {
                                         child: SizedBox(
                                           width: 114,
                                           child: Text(
-                                            "${order.locality}, ${order.city}, ${order.state}",
+                                            "${widget.order.locality}, ${widget.order.city}, ${widget.order.state}",
                                             style: const TextStyle(
                                               fontSize: 14,
                                             ),
@@ -211,7 +228,7 @@ class OrderDetailScreen extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          "To: ${order.fullName}",
+                                          "To: ${widget.order.fullName}",
                                           style: GoogleFonts.lato(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -223,7 +240,7 @@ class OrderDetailScreen extends StatelessWidget {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          "Order ID: ${order.id}",
+                                          "Order ID: ${widget.order.id}",
                                           style: GoogleFonts.lato(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500,
@@ -293,17 +310,21 @@ class OrderDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Mode of Payment:",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-
-                      Text(
-                        "${CheckoutScreen.selectedPayment}",
-                        style: TextStyle(fontSize: 18),
+                      Row(
+                        children: [
+                          Text(
+                            "Mode of Payment:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            "${CheckoutScreen.selectedPayment}",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
                       ),
 
                       SizedBox(height: 10),
@@ -340,10 +361,11 @@ class OrderDetailScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 10),
-                      SizedBox(
+                      Container(
                         height: 44,
                         width: 280,
-                        child: TextField(
+                        child: TextFormField(
+                          controller: reviewController,
                           decoration: InputDecoration(
                             hintText: "Enter text",
                             hintStyle: TextStyle(
@@ -356,7 +378,6 @@ class OrderDetailScreen extends StatelessWidget {
                               vertical: 16,
                             ),
 
-                            prefixIcon: Image.asset("assets/icons/search.png"),
                             suffixIcon: Image.asset("assets/icons/cam.png"),
                             fillColor: Colors.grey.shade200,
                             filled: true,
@@ -364,8 +385,39 @@ class OrderDetailScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RatingBar(
+                          filledIcon: Icons.star,
+                          emptyIcon: Icons.star_border,
+                          onRatingChanged: (value) {
+                            setState(() {
+                              rating = value;
+                            });
+                          },
+                          initialRating: 3,
+                          maxRating: 5,
+                        ),
+                      ),
                       SizedBox(height: 7),
-                      Divider(),
+
+                      ElevatedButton(
+                        onPressed: () {
+                          final review = reviewController.text;
+
+                          productReviewController.uploadReview(
+                            buyerId: widget.order.buyerId,
+                            email: widget.order.email,
+                            fullName: widget.order.fullName,
+                            productId: widget.order.id,
+                            rating: rating,
+                            review: review,
+                            context: context,
+                          );
+                        },
+                        child: Text("Submit"),
+                      ),
+
                       SizedBox(height: 10),
                     ],
                   ),
