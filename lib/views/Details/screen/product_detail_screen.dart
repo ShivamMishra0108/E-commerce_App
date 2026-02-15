@@ -1,6 +1,7 @@
 import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
+import 'package:e_commerce_app/provider/favourite_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,8 +17,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final _cartProvider = ref.read(cartProvider.notifier);
+    final _favouriteProvide = ref.read(favouriteProvider.notifier);
+    ref.watch(favouriteProvider);
     return Scaffold(
-    backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Container(
@@ -58,8 +61,22 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.favorite_border),
-                          onPressed: () {},
+                          icon: Icon(_favouriteProvide.getFavouriteItems.containsKey(widget.product.id)?Icons.favorite:Icons.favorite_border, color: Colors.pink),
+                          onPressed: () {
+                            _favouriteProvide.addProductToFavourite(
+                              productId: widget.product.id,
+                              productName: widget.product.productName,
+                              productPrice: widget.product.productPrice,
+                              productQuantity: widget.product.quantity,
+                              description: widget.product.description,
+                              category: widget.product.category,
+                              vendorId: widget.product.vendorId,
+                              fullName: widget.product.fullName,
+                              image: widget.product.images,
+                              quantity: 1,
+                            );
+                            showSnackBar(context, "${widget.product.productName} added to favourites" );
+                          },
                         ),
                         IconButton(
                           icon: const Icon(Icons.person_outline),
@@ -189,12 +206,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         Widget productInfo(Product product) {
                           return Row(
                             children: [
-                              SizedBox(width: 5,),
+                              SizedBox(width: 5),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
-                                 mainAxisAlignment: MainAxisAlignment.start,
-                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
 
                                   children: [
                                     // PRODUCT NAME
@@ -205,9 +222,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         letterSpacing: 2,
                                       ),
                                     ),
-                                
+
                                     const SizedBox(height: 8),
-                                
+
                                     // PRICE
                                     Text(
                                       "\$${product.productPrice}",
@@ -217,16 +234,22 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         color: Colors.green,
                                       ),
                                     ),
-                                
-                                    const SizedBox(height:8),
-                                
-                                    Row(children: [
-                                      Icon(Icons.star,size: 14,color: Colors.amber,),
-                                      Text("${product.averageRating}")
-                                    ],),
-                                   
+
                                     const SizedBox(height: 8),
-                                
+
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          size: 14,
+                                          color: Colors.amber,
+                                        ),
+                                        Text("${product.averageRating}"),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 8),
+
                                     // DESCRIPTION
                                     Text(
                                       product.description,
@@ -236,7 +259,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         color: Colors.black,
                                       ),
                                     ),
-                                     Text(
+                                    Text(
                                       "Add to Cart",
                                       style: const TextStyle(
                                         fontSize: 14,
@@ -270,7 +293,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               const SizedBox(height: 24),
                               productInfo(widget.product),
                               const SizedBox(height: 100),
-
                             ],
                           );
                         }
