@@ -188,13 +188,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
                         Widget productInfo(Product product) {
                           return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(width: 5,),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                  mainAxisAlignment: MainAxisAlignment.start,
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+
                                   children: [
                                     // PRODUCT NAME
                                     Text(
@@ -217,9 +218,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                       ),
                                     ),
                                 
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height:8),
                                 
-                                  
+                                    Row(children: [
+                                      Icon(Icons.star,size: 14,color: Colors.amber,),
+                                      Text("${product.averageRating}")
+                                    ],),
                                    
                                     const SizedBox(height: 8),
                                 
@@ -229,7 +233,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                       style: const TextStyle(
                                         fontSize: 14,
                                         height: 1.6,
-                                        color: Color(0xFF4B5563),
+                                        color: Colors.black,
                                       ),
                                     ),
                                      Text(

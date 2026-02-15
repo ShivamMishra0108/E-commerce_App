@@ -195,9 +195,16 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
+                       product.averageRating==0?SizedBox():
+                      Row(
+                        children: [
+                          Icon(Icons.star,color: Colors.amber,size: 12,),
+                          Text("${product.averageRating}")
+                        ],
+                      ),
                       const SizedBox(height: 4),
                       Text(
-                        "\$${product.productPrice.toStringAsFixed(2)}",
+                        "₹${product.productPrice.toStringAsFixed(2)}",
                         style: const TextStyle(
                             fontSize: 14, color: Colors.green),
                       ),
