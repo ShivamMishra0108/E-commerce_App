@@ -2,6 +2,7 @@ import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/provider/favourite_provider.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/cart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,21 +62,40 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(_favouriteProvide.getFavouriteItems.containsKey(widget.product.id)?Icons.favorite:Icons.favorite_border, color: Colors.pink),
+                          icon: Icon(
+                            _favouriteProvide.getFavouriteItems.containsKey(
+                                  widget.product.id,
+                                )
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.pink,
+                          ),
                           onPressed: () {
-                            _favouriteProvide.addProductToFavourite(
-                              productId: widget.product.id,
-                              productName: widget.product.productName,
-                              productPrice: widget.product.productPrice,
-                              productQuantity: widget.product.quantity,
-                              description: widget.product.description,
-                              category: widget.product.category,
-                              vendorId: widget.product.vendorId,
-                              fullName: widget.product.fullName,
-                              image: widget.product.images,
-                              quantity: 1,
-                            );
-                            showSnackBar(context, "${widget.product.productName} added to favourites" );
+                            if (!_favouriteProvide.getFavouriteItems
+                                .containsKey(widget.product.id)) {
+                              _favouriteProvide.addProductToFavourite(
+                                productId: widget.product.id,
+                                productName: widget.product.productName,
+                                productPrice: widget.product.productPrice,
+                                productQuantity: widget.product.quantity,
+                                description: widget.product.description,
+                                category: widget.product.category,
+                                vendorId: widget.product.vendorId,
+                                fullName: widget.product.fullName,
+                                image: widget.product.images,
+                                averageRating: widget.product.averageRating,
+                                quantity: 1,
+                              );
+                              showSnackBar(
+                                context,
+                                "${widget.product.productName} added to favourites",
+                              );
+                            } else {
+                              _favouriteProvide.removeFavouriteItem(
+                                widget.product.id,
+                              );
+                              showSnackBar(context, "removed from wishlist");
+                            }
                           },
                         ),
                         IconButton(
@@ -307,43 +327,78 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       ),
       bottomSheet: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-          onTap: () {
-            _cartProvider.addProductToCart(
-              productId: widget.product.id,
-              productName: widget.product.productName,
-              productPrice: widget.product.productPrice,
-              productQuantity: widget.product.quantity,
-              description: widget.product.description,
-              category: widget.product.category,
-              vendorId: widget.product.vendorId,
-              fullName: widget.product.fullName,
-              image: widget.product.images,
-              quantity: 1,
-            );
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: () {
+                _cartProvider.addProductToCart(
+                  productId: widget.product.id,
+                  productName: widget.product.productName,
+                  productPrice: widget.product.productPrice,
+                  productQuantity: widget.product.quantity,
+                  description: widget.product.description,
+                  category: widget.product.category,
+                  vendorId: widget.product.vendorId,
+                  fullName: widget.product.fullName,
+                  image: widget.product.images,
+                  quantity: 1,
+                );
 
-            showSnackBar(
-              context,
-              "${widget.product.productName} Added to Cart",
-            );
-          },
-          child: Container(
-            height: 50,
-            width: 350,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(13),
-            ),
-            child: Center(
-              child: Text(
-                "Add to Cart",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                showSnackBar(
+                  context,
+                  "${widget.product.productName} Added to Cart",
+                );
+              },
+              child: Container(
+                height: 50,
+                width: 250,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Center(
+                  child: Text(
+                    "Add to Cart",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            SizedBox(width: 10),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return CartScreen();
+                    },
+                  ),
+                );
+              },
+              child: Container(
+                height: 50,
+                width: 150,
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Center(
+                  child: Text(
+                    "Go to Cart",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

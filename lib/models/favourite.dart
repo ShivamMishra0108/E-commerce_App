@@ -8,6 +8,7 @@ class Favourite {
   final String vendorId;
   final String fullName;
   final List<String> image;
+   final double averageRating;
    int quantity;
 
   Favourite({
@@ -20,6 +21,7 @@ class Favourite {
     required this.vendorId,
     required this.fullName,
     required this.image,
+    required this.averageRating,
     required this.quantity,
   });
 }

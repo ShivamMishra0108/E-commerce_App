@@ -108,7 +108,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                 left: 60,
                 top: 51,
                 child: Text(
-                  "My Cart",
+                  "My Orders",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -213,7 +213,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Container(
                                         height: 14,
-                                        width: 60,
+                                        width: 70,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(2),
                                           color: Colors.blue,
@@ -222,7 +222,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                           child: Text(
                                             order.processing
                                                 ? "Processing"
-                                                : "Order Placed",
+                                                : "OrderPlaced",
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 10,

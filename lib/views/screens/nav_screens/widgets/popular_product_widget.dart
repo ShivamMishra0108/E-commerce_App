@@ -26,7 +26,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return FutureBuilder(
-//       future: futurePopularProducts, 
+//       future: futurePopularProducts,
 //       builder: (context, snapshot) {
 //         if(snapshot.connectionState== ConnectionState.waiting){
 //           return Center(child: CircularProgressIndicator(),);
@@ -55,21 +55,24 @@
 
 // }
 
-
-
 import 'package:e_commerce_app/controllers/product_controller.dart';
+import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/product_model.dart';
+import 'package:e_commerce_app/provider/cart_provider.dart';
+import 'package:e_commerce_app/provider/favourite_provider.dart';
 import 'package:e_commerce_app/views/Details/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 
-class PopularProductWidget extends StatefulWidget {
+class PopularProductWidget extends ConsumerStatefulWidget {
   const PopularProductWidget({super.key});
 
   @override
-  State<PopularProductWidget> createState() => _PopularProductWidgetState();
+  _PopularProductWidgetState createState() => _PopularProductWidgetState();
 }
 
-class _PopularProductWidgetState extends State<PopularProductWidget> {
+class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
   late Future<List<Product>> futurePopularProducts;
 
   @override
@@ -79,7 +82,7 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
   }
 
   void loadPopularProducts() {
-    futurePopularProducts = ProductController().loadProducts(); 
+    futurePopularProducts = ProductController().loadProducts();
     // or getPopularProduct() if you want only popular ones
   }
 
@@ -91,6 +94,11 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final _favouriteProvider = ref.read(favouriteProvider.notifier);
+    final favouriteItems = ref.watch(favouriteProvider);
+    final _cartProvider = ref.read(cartProvider.notifier);
+    final cartItems = ref.watch(cartProvider);
+
     return FutureBuilder<List<Product>>(
       future: futurePopularProducts,
       builder: (context, snapshot) {
@@ -117,8 +125,7 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          ProductDetailScreen(product: product),
+                      builder: (_) => ProductDetailScreen(product: product),
                     ),
                   );
                 },
@@ -139,49 +146,113 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
                         child: Stack(
                           children: [
                             product.images.isNotEmpty
-                                ? Image.network(
-                                    resolveImageUrl(product.images[0]),
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    fit: BoxFit.cover,
-                                    loadingBuilder: (context, child,
-                                        loadingProgress) {
-                                      if (loadingProgress == null)
-                                        return child;
-                                      return const Center(
-                                          child:
-                                              CircularProgressIndicator());
-                                    },
-                                    errorBuilder:
-                                        (context, error, stackTrace) {
-                                      return const Center(
-                                        child: Icon(
-                                          Icons.broken_image,
-                                          size: 50,
-                                          color: Colors.grey,
-                                        ),
-                                      );
-                                    },
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.network(
+                                      resolveImageUrl(product.images[0]),
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                            if (loadingProgress == null)
+                                              return child;
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return const Center(
+                                              child: Icon(
+                                                Icons.broken_image,
+                                                size: 50,
+                                                color: Colors.grey,
+                                              ),
+                                            );
+                                          },
+                                    ),
                                   )
                                 : const Center(
                                     child: Icon(Icons.image, size: 50),
                                   ),
                             Positioned(
-                              top: 15,
-                              right: 5,
-                              child: Image.asset(
-                                "assets/icons/love.png",
-                                height: 26,
-                                width: 26,
+                              top: 1,
+                              right: 1,
+                              child: IconButton(
+                                icon: favouriteItems.containsKey(product.id)
+                                    ? Icon(Icons.favorite, color: Colors.pink)
+                                    : Icon(Icons.favorite_border),
+                                onPressed: () {
+                                  if (!favouriteItems.containsKey(product.id)) {
+                                    _favouriteProvider.addProductToFavourite(
+                                      productId: product.id,
+                                      productName: product.productName,
+                                      productPrice: product.productPrice,
+                                      productQuantity: product.quantity,
+                                      description: product.description,
+                                      category: product.category,
+                                      vendorId: product.vendorId,
+                                      fullName: product.fullName,
+                                      image: product.images,
+                                      averageRating: product.averageRating,
+                                      quantity: 1,
+                                    );
+                                    showSnackBar(
+                                      context,
+                                      "${product.productName} added to favourites",
+                                    );
+                                  } else {
+                                    _favouriteProvider.removeFavouriteItem(
+                                      product.id,
+                                    );
+                                    showSnackBar(
+                                      context,
+                                      "removed from wishlist",
+                                    );
+                                  }
+                                },
                               ),
                             ),
                             Positioned(
-                              top: 5,
-                              left: 5,
-                              child: Image.asset(
-                                "assets/icons/cart.png",
-                                height: 26,
-                                width: 26,
+                              bottom: 2,
+                              right: 2,
+                              child: IconButton(
+                                onPressed: () {
+                                  if(!cartItems.containsKey(product.id)){
+                                  _cartProvider.addProductToCart(
+                                    productId: product.id,
+                                    productName: product.productName,
+                                    productPrice: product.productPrice,
+                                    productQuantity: product.quantity,
+                                    description: product.description,
+                                    category: product.category,
+                                    vendorId: product.vendorId,
+                                    fullName: product.fullName,
+                                    image: product.images,
+                                    quantity: 1,
+                                  );
+
+                                  showSnackBar(
+                                    context,
+                                    "${product.productName} Added to Cart",
+                                  );
+                                  }
+                                  else{
+                                    _cartProvider.removeItem(product.id);
+
+                                    showSnackBar(
+                                      context,
+                                      "removed from cart",
+                                    );
+                                  }
+                                },
+                                icon: cartItems.containsKey(product.id)? Icon(Icons.shopping_bag, color: Colors.amber,): Image.asset(
+                                  "assets/icons/cart.png",
+                                  height: 26,
+                                  width: 26,
+                                ),
                               ),
                             ),
                           ],
@@ -193,20 +264,25 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                       product.averageRating==0?SizedBox():
-                      Row(
-                        children: [
-                          Icon(Icons.star,color: Colors.amber,size: 12,),
-                          Text("${product.averageRating}")
-                        ],
-                      ),
+                      product.averageRating == 0
+                          ? SizedBox()
+                          : Row(
+                              children: [
+                                Icon(Icons.star, color: Colors.amber, size: 12),
+                                Text("${product.averageRating}"),
+                              ],
+                            ),
                       const SizedBox(height: 4),
                       Text(
                         "₹${product.productPrice.toStringAsFixed(2)}",
                         style: const TextStyle(
-                            fontSize: 14, color: Colors.green),
+                          fontSize: 14,
+                          color: Colors.green,
+                        ),
                       ),
                     ],
                   ),
@@ -219,4 +295,3 @@ class _PopularProductWidgetState extends State<PopularProductWidget> {
     );
   }
 }
-

@@ -98,7 +98,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 height: 14,
-                                width: 60,
+                                width: 70,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(2),
                                   color: Color.fromARGB(255, 65, 194, 166),
@@ -107,7 +107,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   child: Text(
                                     widget.order.processing
                                         ? "Processing"
-                                        : "Order Placed",
+                                        : "OrderPlaced",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 10,
@@ -116,7 +116,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 ),
                               ),
                             ),
-                            !widget.order.delivered
+                            widget.order.delivered
                                 ? Container(
                                     height: 14,
                                     width: 60,
