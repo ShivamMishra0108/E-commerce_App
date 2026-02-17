@@ -30,7 +30,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor:  Color.fromARGB(255, 65, 194, 166),
+       
         title: Text(
           "${widget.order.productName}",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),

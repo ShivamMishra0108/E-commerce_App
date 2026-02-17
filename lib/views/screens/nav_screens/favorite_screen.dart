@@ -218,6 +218,7 @@ class FavoriteScreen extends ConsumerWidget {
                                       vendorId: favourite.vendorId,
                                       fullName: favourite.fullName,
                                       image: favourite.image,
+                                      averageRating: favourite.averageRating,
                                       quantity: 1,
                                     );
 

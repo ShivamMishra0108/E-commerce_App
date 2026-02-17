@@ -231,6 +231,7 @@ class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
                                     vendorId: product.vendorId,
                                     fullName: product.fullName,
                                     image: product.images,
+                                    averageRating: product.averageRating,
                                     quantity: 1,
                                   );
 

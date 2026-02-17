@@ -342,6 +342,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   vendorId: widget.product.vendorId,
                   fullName: widget.product.fullName,
                   image: widget.product.images,
+                  averageRating: widget.product.averageRating,
                   quantity: 1,
                 );
 
