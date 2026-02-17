@@ -24,19 +24,74 @@ class FavoriteScreen extends ConsumerWidget {
           height: 118,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/icons/cartb.png"),
-              fit: BoxFit.cover,
+            borderRadius: BorderRadius.circular(13),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                // Colors.lightBlue.withOpacity(0.6),
+                Colors.white.withOpacity(0.6),
+                Colors.white.withOpacity(0.6),
+              ],
             ),
           ),
           child: Stack(
             children: [
               Positioned(
+                left: 155,
+                top: 46,
+                child: Container(
+                  height: 45,
+                  width: 180,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.blue, width: 1),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Enter text",
+                        
+                        hintStyle: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                          
+                        ),
+                        
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 14,
+                        ),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Image.asset(
+                            "assets/icons/search.png",
+                            height: 20,
+                            width: 20,
+                          ),
+                        ),
+                       
+                        border: InputBorder.none,
+                        filled: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              Positioned(
                 left: 360,
                 top: 52,
                 child: Stack(
                   children: [
-                    Image.asset("assets/icons/not.png", height: 25, width: 25),
+                    Image.asset(
+                      "assets/icons/not.png",
+                      height: 25,
+                      width: 25,
+                      color: Colors.black,
+                    ),
                     Positioned(
                       top: 0,
                       right: 0,
@@ -64,26 +119,18 @@ class FavoriteScreen extends ConsumerWidget {
                 ),
               ),
               Positioned(
-                left: 60,
+                left: 18,
                 top: 51,
                 child: Text(
                   "My Favourites",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),
-              Positioned(
-                left: 20,
-                top: 51,
-                child: Image.asset(
-                  "assets/icons/cart.png",
-                  height: 25,
-                  width: 25,
-                ),
-              ),
+             
             ],
           ),
         ),

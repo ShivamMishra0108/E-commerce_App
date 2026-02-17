@@ -1,9 +1,7 @@
 // // A notifier class to manage the wishlist state , extending stateNotifier
 // // with an itntial state of empty map
 
-import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/favourite.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // // Define a stateNotifierProvider to expose an instance of favouriteNotifier

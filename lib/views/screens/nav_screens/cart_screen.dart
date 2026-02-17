@@ -13,9 +13,7 @@ class CartScreen extends ConsumerStatefulWidget {
 }
 
 class _CartScreenState extends ConsumerState<CartScreen> {
-  
   @override
-  
   Widget build(BuildContext context) {
     final cartData = ref.watch(cartProvider);
     final _cartProvider = ref.read(cartProvider.notifier);
@@ -28,11 +26,17 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: 118,
-          clipBehavior: Clip.hardEdge,
+
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/icons/cartb.png"),
-              fit: BoxFit.cover,
+            borderRadius: BorderRadius.circular(13),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                // Colors.lightBlue.withOpacity(0.6),
+                Colors.white.withOpacity(0.6),
+                Colors.lightBlue.withOpacity(0.6),
+              ],
             ),
           ),
 
@@ -71,6 +75,48 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 ),
               ),
               Positioned(
+                left: 160,
+                top: 51,
+                child: Container(
+                  height: 45,
+                  width: 180,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.blue, width: 1),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Enter text",
+
+                        hintStyle: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                        ),
+
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 14,
+                        ),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Image.asset(
+                            "assets/icons/search.png",
+                            height: 20,
+                            width: 20,
+                          ),
+                        ),
+
+                        border: InputBorder.none,
+                        filled: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
                 left: 60,
                 top: 51,
                 child: Text(
@@ -78,7 +124,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),

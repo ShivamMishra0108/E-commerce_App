@@ -37,13 +37,12 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
     }
   }
 
-  Future<void> _deleteOrder( String id, )async{
+  Future<void> _deleteOrder(String id) async {
     final OrderController _orderController = OrderController();
 
     try {
       await _orderController.deleteOrders(id: id, context: context);
       fetchOrders();
-
     } catch (e) {
       print("Error deleting order: $e");
     }
@@ -64,9 +63,15 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
           height: 118,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/icons/cartb.png"),
-              fit: BoxFit.cover,
+            borderRadius: BorderRadius.circular(13),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                // Colors.lightBlue.withOpacity(0.6),
+                Colors.white.withOpacity(0.6),
+                Colors.lightBlue.withOpacity(0.6),
+              ],
             ),
           ),
 
@@ -77,7 +82,12 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                 top: 52,
                 child: Stack(
                   children: [
-                    Image.asset("assets/icons/not.png", height: 25, width: 25),
+                    Image.asset(
+                      "assets/icons/not.png",
+                      height: 25,
+                      width: 25,
+                      color: Colors.black,
+                    ),
                     Positioned(
                       top: 0,
                       right: 0,
@@ -112,7 +122,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),
@@ -121,34 +131,61 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                 top: 51,
                 child: Stack(
                   children: [
-                    Image.asset("assets/icons/cart.png", height: 25, width: 25),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 25,
+                        color: Colors.black,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Positioned(
                 left: 160,
                 top: 51,
-                child: SizedBox(
-              height: 38,
-              width: 180,
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Search Your Order",
-                  hintStyle: TextStyle(color: Colors.black, fontSize: 13),
-                  
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 16,
+                child: Container(
+                  height: 45,
+                  width: 180,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.blue, width: 1),
                   ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Enter text",
 
-                  prefixIcon: Image.asset("assets/icons/search.png"),
-                  
-                  fillColor: Colors.grey.shade200,
-                  filled: true,
-                  focusColor: Colors.black,
+                        hintStyle: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                        ),
+
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 14,
+                        ),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Image.asset(
+                            "assets/icons/search.png",
+                            height: 20,
+                            width: 20,
+                          ),
+                        ),
+
+                        border: InputBorder.none,
+                        filled: false,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),)
             ],
           ),
         ),
@@ -164,9 +201,14 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     ListTile(
                       title: InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return OrderDetailScreen(order: order);
-                          }));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return OrderDetailScreen(order: order);
+                              },
+                            ),
+                          );
                         },
                         child: Container(
                           height: 100,
@@ -188,15 +230,18 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                               ),
                               SizedBox(width: 15),
                               Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
                                     order.productName,
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                        
+
                                   Text(order.category),
-                        
+
                                   Text(
                                     "${order.productPrice}",
                                     style: TextStyle(color: Colors.green),
@@ -204,7 +249,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                 ],
                               ),
                               SizedBox(width: 12),
-                        
+
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -215,7 +260,9 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                         height: 14,
                                         width: 70,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(
+                                            2,
+                                          ),
                                           color: Colors.blue,
                                         ),
                                         child: Center(
@@ -246,7 +293,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                               fontSize: 13,
                                             ),
                                           ),
-                        
+
                                     InkWell(
                                       onTap: () {
                                         _deleteOrder(order.id);

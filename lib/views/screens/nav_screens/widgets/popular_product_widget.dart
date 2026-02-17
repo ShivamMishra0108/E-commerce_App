@@ -63,7 +63,7 @@ import 'package:e_commerce_app/provider/favourite_provider.dart';
 import 'package:e_commerce_app/views/Details/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 class PopularProductWidget extends ConsumerStatefulWidget {
   const PopularProductWidget({super.key});
