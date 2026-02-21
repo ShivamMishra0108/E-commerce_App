@@ -48,30 +48,33 @@ class Product {
   }
 
   factory Product.fromJson(Map<String, dynamic> map) {
-    return Product(
-      id: map['_id'] ?? '',
-      productName: map['productName'] ?? '',
-      productPrice: map['productPrice'] is int
-          ? map['productPrice']
-          : int.tryParse(map['productPrice']?.toString() ?? '0') ?? 0,
-      quantity: map['quantity'] is int
-          ? map['quantity']
-          : int.tryParse(map['quantity']?.toString() ?? '0') ?? 0,
-      description: map['description'] ?? '',
-      category: map['category'] ?? '',
-      vendorId: map['vendorId'] ?? '',
-      fullName: map['fullName'] ?? '',
-      subCategory: map['subCategory'] ?? '',
-      images: map['images'] == null
-          ? <String>[]
-          : List<String>.from(
-              (map['images'] as List).map((e) => e.toString()),
-            ),
-      averageRating: map['averageRating'] as double,
-      totalRatings: map['totalRatings'] as int,
-    );
-  }
+  return Product(
+    id: map['_id'] ?? '',
+    productName: map['productName'] ?? '',
+    productPrice: map['productPrice'] is int
+        ? map['productPrice']
+        : int.tryParse(map['productPrice']?.toString() ?? '0') ?? 0,
+    quantity: map['quantity'] is int
+        ? map['quantity']
+        : int.tryParse(map['quantity']?.toString() ?? '0') ?? 0,
+    description: map['description'] ?? '',
+    category: map['category'] ?? '',
+    vendorId: map['vendorId'] ?? '',
+    fullName: map['fullName'] ?? '',
+    subCategory: map['subCategory'] ?? '',
+    images: map['images'] == null
+        ? <String>[]
+        : List<String>.from(
+            (map['images'] as List).map((e) => e.toString()),
+          ),
 
+    // ✅ FIXED HERE
+    averageRating: (map['averageRating'] ?? 0).toDouble(),
+
+    // ✅ FIXED HERE
+    totalRatings: map['totalRatings'] ?? 0,
+  );
+}
   String toJson() => json.encode(toMap());
 }
 

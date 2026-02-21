@@ -22,8 +22,9 @@ class InnerCategoryContent extends StatefulWidget {
 
 class _InnerCategoryContentState extends State<InnerCategoryContent> {
   late Future<List<Subcategory>> _subcategories;
-  late Future<List<Product>> fututeProduct;
+  List<Product> _products = [];
   final SubcategoryController _subcategoryController = SubcategoryController();
+  final ProductController _productController = ProductController();
 
   @override
   void initState() {
@@ -33,7 +34,16 @@ class _InnerCategoryContentState extends State<InnerCategoryContent> {
       widget.category.name,
     );
 
-    fututeProduct = ProductController().getProductByCategory(widget.category.name);
+    _loadProducts(widget.category.name);
+  }
+
+  Future<void> _loadProducts(String categoryName) async {
+    final products = await _productController.getProductByCategory(
+      categoryName,
+    );
+    setState(() {
+      _products = products;
+    });
   }
 
   @override
@@ -44,12 +54,11 @@ class _InnerCategoryContentState extends State<InnerCategoryContent> {
         child: InnerHeaderWidget(),
       ),
 
-
       body: SingleChildScrollView(
         child: Column(
           children: [
             InnerBannerWidgert(image: widget.category.banner),
-        
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
@@ -62,7 +71,7 @@ class _InnerCategoryContentState extends State<InnerCategoryContent> {
                 ),
               ),
             ),
-        
+
             FutureBuilder(
               future: _subcategories,
               builder: (context, snapshot) {
@@ -75,55 +84,61 @@ class _InnerCategoryContentState extends State<InnerCategoryContent> {
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Column(
-                      children: 
-                        List.generate((subcategories.length / 7).ceil(), (
-                          setIndex,
-                        ) {
+                      children: List.generate(
+                        (subcategories.length / 7).ceil(),
+                        (setIndex) {
                           final start = setIndex * 7;
-                          final end = (setIndex+1)*7;
-        
-                          return Padding(padding: EdgeInsetsGeometry.all(1.8),
-                          child: Row(
-                            children: subcategories.sublist(start,end>subcategories.length?subcategories.length:end).map(
-                              (subcategories) => SubcategoryTileWidget(image: subcategories.image, title: subcategories.subCategoryName,)).toList(),
-                          ),);
-                        }),
-                    
+                          final end = (setIndex + 1) * 7;
+
+                          return Padding(
+                            padding: EdgeInsetsGeometry.all(1.8),
+                            child: Row(
+                              children: subcategories
+                                  .sublist(
+                                    start,
+                                    end > subcategories.length
+                                        ? subcategories.length
+                                        : end,
+                                  )
+                                  .map(
+                                    (subcategories) => SubcategoryTileWidget(
+                                      image: subcategories.image,
+                                      title: subcategories.subCategoryName,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   );
                 }
               },
             ),
             const TextWidget(title: 'Popular Products', subtitle: 'view all'),
-        
-            FutureBuilder(
-        future: fututeProduct, 
-        builder: (context, snapshot) {
-          if(snapshot.connectionState== ConnectionState.waiting){
-            return Center(child: CircularProgressIndicator(),);
-          }else if(snapshot.hasError){
-            return Center(child: Text("Error: ${snapshot.error}"),);
-          }else if(!snapshot.hasData || snapshot.data!.isEmpty){
-            return Center(child: Text("No product under this Category"),);
-          }else{
-            final products = snapshot.data;
-            return SizedBox(
-              height: 250,
-              child: ListView.builder(
-                itemCount: products!.length,
-                  scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemBuilder: (context, index){
-                  final product = products[index];
-                  print(product.images);
-        
-                  return PopularProductWidget();
-        
-                }),
-            );
-          }
-        }),
 
+            SizedBox(
+              height: 250,
+              child: GridView.builder(
+                scrollDirection: Axis.horizontal,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 1.2,
+                ),
+                itemCount: _products.length,
+                itemBuilder: (context, index) {
+                  final product = _products[index];
+
+                  return SubcategoryTileWidget(
+                    image: product.images[0],
+                    title: product.productName,
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),

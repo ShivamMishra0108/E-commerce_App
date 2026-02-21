@@ -66,7 +66,7 @@ class _BannerWidgetState extends State<BannerWidget> {
           child: TextWidget(title: "Special for you", subtitle: "See all"),
         ),
 
-        const SizedBox(height: 6), 
+        const SizedBox(height: 3), 
 
         Container(
           height: 200,

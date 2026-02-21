@@ -4,6 +4,7 @@ import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/order.dart';
 import 'package:e_commerce_app/services/manage_http_responses.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderController {
   uploadOrder({
@@ -25,6 +26,8 @@ class OrderController {
     required context,
   }) async {
     try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
       final Order order = Order(
         id: id,
         fullName: fullName,
@@ -48,6 +51,7 @@ class OrderController {
         body: order.toJson(),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
+          "x-auth-token":token!,
         },
       );
       manageHttpResponse(
@@ -62,12 +66,16 @@ class OrderController {
     }
   }
 
+  // Get orders by buyerId: 
   Future<List<Order>> loadOrders({required String buyerId}) async {
     try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
       http.Response response = await http.get(
         Uri.parse('$uri/api/orders/$buyerId'),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
+          "x-auth-token":token!,
         },
       );
       if (response.statusCode == 200) {
@@ -88,10 +96,13 @@ class OrderController {
 
   Future<void> deleteOrders({required String id, required context}) async {
     try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
       http.Response response = await http.delete(
         Uri.parse("$uri/api/orders/delete/$id"),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
+          "x-auth-token":token!,
         },
       );
 

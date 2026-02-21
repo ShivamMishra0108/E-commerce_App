@@ -1,8 +1,12 @@
+import 'package:e_commerce_app/controllers/product_controller.dart';
 import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/provider/favourite_provider.dart';
+import 'package:e_commerce_app/provider/related_product_providr.dart';
+import 'package:e_commerce_app/views/Details/widgets/subCategory_tile_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/cart_screen.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/widgets/reuseable_textWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,11 +19,31 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
+
+
+  void initState() {
+    super.initState();
+    loadPopularProducts();
+  }
+
+  void loadPopularProducts() async{
+    final ProductController _productController = ProductController();
+    try {
+      final products = await _productController.getRelatedProduct(widget.product.id);
+      ref.read(relatedProductProvider.notifier).SetProducts(products);
+    } catch (e) {
+      
+    }
+    // or getPopularProduct() if you want only popular ones
+  }
+
   @override
   Widget build(BuildContext context) {
+    final _relatedProduct = ref.watch(relatedProductProvider);
     final _cartProvider = ref.read(cartProvider.notifier);
     final _favouriteProvide = ref.read(favouriteProvider.notifier);
     ref.watch(favouriteProvider);
+    
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -318,11 +342,38 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         }
                       },
                     ),
+                    TextWidget(title: "Related Products", subtitle: ''),
+
+                     SizedBox(
+                                height: 230, // height of the horizontal grid
+                                child: GridView.builder(
+                                  scrollDirection: Axis
+                                      .horizontal, // make it scroll horizontally
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 1, // 1 row
+                                        mainAxisSpacing: 8,
+                                        childAspectRatio:
+                                            1.2, // adjust for width/height of tiles
+                                      ),
+                                  itemCount: _relatedProduct.length,
+                                  itemBuilder: (context, index) {
+                                    final relatedProduct = _relatedProduct[index];
+                                    return SubcategoryTileWidget(
+                                      image: relatedProduct.images[0],
+                                      title: relatedProduct.productName,
+                                    );
+                                  },
+                                ),
+                              ),
+
+
                   ],
                 ),
               ),
             ),
           ),
+
         ],
       ),
       bottomSheet: Padding(

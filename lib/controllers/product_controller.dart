@@ -111,17 +111,30 @@ Future<List<Product>> getProductByCategory(String category)async{
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
 
-      List<Product> products = data.map((productJson) {
-        Map<String, dynamic> map = productJson as Map<String, dynamic>;
+      List<Product> products = data.map((productJson) => Product.fromJson(productJson as Map<String, dynamic>)).toList();
 
-        // Prepend backend URL to each image
-        List<String> fullImages = (map['images'] as List<dynamic>)
-            .map((img) => "$uri/uploads/$img")
-            .toList();
+      return products;
+    } else {
+      throw Exception("Failed to load popular products");
+    }
+  } catch (e) {
+    throw Exception("Failed loading popular products: $e");
 
-        map['images'] = fullImages;
-        return Product.fromJson(map);
-      }).toList();
+  }
+}
+
+Future<List<Product>> getRelatedProduct(String productId)async{
+  try {
+    http.Response response = await http.get(Uri.parse("$uri/api/products-by-subcategory/$productId"),
+     headers: <String, String>{
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+    ); 
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+
+          List<Product> products = data.map((productJson) => Product.fromJson(productJson as Map<String, dynamic>)).toList();
 
       return products;
     } else {

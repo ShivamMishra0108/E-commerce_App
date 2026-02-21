@@ -1,6 +1,8 @@
 import 'package:e_commerce_app/controllers/category_controller.dart';
+import 'package:e_commerce_app/controllers/product_controller.dart';
 import 'package:e_commerce_app/controllers/subCategory_controller.dart';
 import 'package:e_commerce_app/models/category_models.dart';
+import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/models/subCategory_model.dart';
 import 'package:e_commerce_app/views/Details/widgets/subCategory_tile_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/header_widget.dart';
@@ -19,8 +21,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   late Future<List<Category>> futureCategories;
   List<Subcategory> _subcategories = [];
+  List<Product> _products = [];
 
   final SubcategoryController _subCategoryController = SubcategoryController();
+  final ProductController _productController = ProductController();
 
   @override
   void initState() {
@@ -35,6 +39,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             _selectedcategory = category;
           });
           _loadSubCategories(category.name);
+          _loadProducts(category.name);
         }
       }
     });
@@ -46,6 +51,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
     setState(() {
       _subcategories = subcategories;
+    });
+  }
+
+  Future<void> _loadProducts(String categoryName) async {
+    final products = await _productController.getProductByCategory(
+      categoryName,
+    );
+    setState(() {
+      _products = products;
     });
   }
 
@@ -89,6 +103,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                     _selectedcategory = category;
                                   });
                                   _loadSubCategories(category.name);
+                                  _loadProducts(category.name);
                                 },
                                 title: Text(
                                   category.name,
@@ -112,55 +127,104 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 Expanded(
                   flex: 5,
                   child: _selectedcategory != null
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                _selectedcategory!.name,
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.7,
+                      ? SingleChildScrollView(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  _selectedcategory!.name,
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.7,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 150,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                      _selectedcategory!.banner,
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: 150,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        _selectedcategory!.banner,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: GridView.builder(
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 4,
-                                      mainAxisSpacing: 8,
-                                      crossAxisSpacing: 8,
-                                      childAspectRatio: 0.6,
-                                    ),
-                                itemCount: _subcategories.length,
-                                itemBuilder: (context, index) {
-                                  final subcategory = _subcategories[index];
-                      
-                                  return SubcategoryTileWidget(
-                                    image: subcategory.image,
-                                    title: subcategory.subCategoryName,
-                                  );
-                                },
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Sub Categories",
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.7,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        )
+                              SizedBox(
+                                height: 140, // height of the horizontal grid
+                                child: GridView.builder(
+                                  scrollDirection: Axis
+                                      .horizontal, // make it scroll horizontally
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 1, // 1 row
+                                        mainAxisSpacing: 8,
+                                        childAspectRatio:
+                                            1.2, // adjust for width/height of tiles
+                                      ),
+                                  itemCount: _subcategories.length,
+                                  itemBuilder: (context, index) {
+                                    final subcategory = _subcategories[index];
+                                    return SubcategoryTileWidget(
+                                      image: subcategory.image,
+                                      title: subcategory.subCategoryName,
+                                    );
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Products",
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.7,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 140,
+                                child: GridView.builder(
+                                  scrollDirection: Axis
+                                      .horizontal,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 1,
+                                        mainAxisSpacing: 8,
+                                        crossAxisSpacing: 8,
+                                        childAspectRatio: 1.2,
+                                      ),
+                                  itemCount: _products.length,
+                                  itemBuilder: (context, index) {
+                                    final product = _products[index];
+                                                              
+                                    return SubcategoryTileWidget(
+                                      image: product.images[0],
+                                      title: product.productName,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                      )
                       : Container(),
                 ),
               ],
