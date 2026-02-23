@@ -1,6 +1,9 @@
 import 'package:e_commerce_app/global_variable.dart';
+import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/provider/favourite_provider.dart';
+import 'package:e_commerce_app/provider/product_provider.dart';
+import 'package:e_commerce_app/views/Details/screen/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,9 +15,10 @@ class FavoriteScreen extends ConsumerWidget {
     // Get favourites map from provider
     final favouritesMap = ref.watch(favouriteProvider);
     final _cartProvider = ref.read(cartProvider.notifier);
+    final productMap = ref.watch(productProvider);
     final _favouriteProvide = ref.read(favouriteProvider.notifier);
-    final favourites = favouritesMap.values
-        .toList(); // convert to list for ListView
+    final favourites = favouritesMap.values.toList();
+    final products = productMap.toList();
 
     return Scaffold(
       appBar: PreferredSize(
@@ -53,13 +57,12 @@ class FavoriteScreen extends ConsumerWidget {
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: "Enter text",
-                        
+
                         hintStyle: const TextStyle(
                           color: Colors.black54,
                           fontSize: 14,
-                          
                         ),
-                        
+
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 14,
@@ -72,7 +75,7 @@ class FavoriteScreen extends ConsumerWidget {
                             width: 20,
                           ),
                         ),
-                       
+
                         border: InputBorder.none,
                         filled: false,
                       ),
@@ -130,7 +133,6 @@ class FavoriteScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-             
             ],
           ),
         ),
@@ -141,6 +143,7 @@ class FavoriteScreen extends ConsumerWidget {
               itemCount: favourites.length,
               itemBuilder: (context, index) {
                 final favourite = favourites[index];
+                //final product = products[index];
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -149,12 +152,29 @@ class FavoriteScreen extends ConsumerWidget {
                   ),
                   child: ListTile(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => ProductDetailScreen(product: favourite),
-                      //   ),
-                      // );
+                      final productFromFavourite = Product(
+                        id: favourite.productId,
+                        productName: favourite.productName,
+                        productPrice: favourite.productPrice,
+                        quantity: favourite.quantity,
+                        description: favourite.description,
+                        category: favourite.category,
+                        vendorId: favourite.vendorId,
+                        fullName: favourite.fullName,
+                        subCategory: '',
+                        images: favourite.image,
+                        averageRating: favourite.averageRating,
+                        totalRatings: 0,
+                      );
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailScreen(
+                            product: productFromFavourite,
+                          ),
+                        ),
+                      );
                     },
                     title: Container(
                       height: 200,

@@ -61,12 +61,8 @@ class _BannerWidgetState extends State<BannerWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
        
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: TextWidget(title: "Special for you", subtitle: "See all"),
-        ),
+        TextWidget(title: "#SpecialForYou", subtitle: "See all"),
 
-        const SizedBox(height: 3), 
 
         Container(
           height: 200,

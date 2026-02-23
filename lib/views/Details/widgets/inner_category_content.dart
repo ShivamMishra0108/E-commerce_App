@@ -3,6 +3,7 @@ import 'package:e_commerce_app/controllers/subCategory_controller.dart';
 import 'package:e_commerce_app/models/category_models.dart';
 import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/models/subCategory_model.dart';
+import 'package:e_commerce_app/views/Details/screen/product_detail_screen.dart';
 import 'package:e_commerce_app/views/Details/widgets/inner_banner_widgert.dart';
 import 'package:e_commerce_app/views/Details/widgets/inner_header_widget.dart';
 import 'package:e_commerce_app/views/Details/widgets/subCategory_tile_widget.dart';
@@ -118,25 +119,80 @@ class _InnerCategoryContentState extends State<InnerCategoryContent> {
             ),
             const TextWidget(title: 'Popular Products', subtitle: 'view all'),
 
-            SizedBox(
-              height: 250,
-              child: GridView.builder(
-                scrollDirection: Axis.horizontal,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  childAspectRatio: 1.2,
-                ),
-                itemCount: _products.length,
-                itemBuilder: (context, index) {
-                  final product = _products[index];
+            InkWell(
+              onTap: () {},
+              child: SizedBox(
+                height: 250,
+                child: GridView.builder(
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    childAspectRatio: 1.2,
+                  ),
+                  itemCount: _products.length,
+                  itemBuilder: (context, index) {
+                    final product = _products[index];
 
-                  return SubcategoryTileWidget(
-                    image: product.images[0],
-                    title: product.productName,
-                  );
-                },
+                    return Card(
+                      color: Colors.white,
+                      elevation: 3,
+                      borderOnForeground: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.zero,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductDetailScreen(product: product),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    product.images[0],
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                product.productName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "\$${product.productPrice.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],

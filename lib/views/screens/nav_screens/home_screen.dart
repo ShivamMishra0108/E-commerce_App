@@ -11,12 +11,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(children: [
           HeaderWidget(),
            BannerWidget(),
            CategoryWidget(),
-           TextWidget(title:" Popular Products", subtitle: "view all"),
+           TextWidget(title:"Popular Products", subtitle: "view all"),
            PopularProductWidget()
            ]),
       ),

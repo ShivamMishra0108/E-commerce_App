@@ -120,172 +120,189 @@ class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
             itemBuilder: (context, index) {
               final product = products[index];
 
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProductDetailScreen(product: product),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 170,
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Product image
-                      Container(
-                        height: 170,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(22),
+              return Container(
+                width: 170,
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                child: Card(
+                  color: Colors.white,
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ProductDetailScreen(product: product),
                         ),
-                        clipBehavior: Clip.hardEdge,
-                        child: Stack(
-                          children: [
-                            product.images.isNotEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image.network(
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              product.images.isNotEmpty
+                                  ? Image.network(
                                       resolveImageUrl(product.images[0]),
                                       width: double.infinity,
-                                      height: double.infinity,
                                       fit: BoxFit.cover,
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                            if (loadingProgress == null)
-                                              return child;
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          },
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                            return const Center(
-                                              child: Icon(
-                                                Icons.broken_image,
-                                                size: 50,
-                                                color: Colors.grey,
-                                              ),
-                                            );
-                                          },
+                                    )
+                                  : const Center(
+                                      child: Icon(Icons.image, size: 50),
                                     ),
-                                  )
-                                : const Center(
-                                    child: Icon(Icons.image, size: 50),
+
+                              Positioned(
+                                top: 6,
+                                right: 6,
+                                child: CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor: Colors.white,
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    iconSize: 18,
+                                    icon: favouriteItems.containsKey(product.id)
+                                        ? const Icon(
+                                            Icons.favorite,
+                                            color: Colors.pink,
+                                          )
+                                        : const Icon(Icons.favorite_border),
+                                    onPressed: () {
+                                      if (!favouriteItems.containsKey(
+                                        product.id,
+                                      )) {
+                                        _favouriteProvider
+                                            .addProductToFavourite(
+                                              productId: product.id,
+                                              productName: product.productName,
+                                              productPrice:
+                                                  product.productPrice,
+                                              productQuantity: product.quantity,
+                                              description: product.description,
+                                              category: product.category,
+                                              vendorId: product.vendorId,
+                                              fullName: product.fullName,
+                                              image: product.images,
+                                              averageRating:
+                                                  product.averageRating,
+                                              quantity: 1,
+                                            );
+                                        showSnackBar(
+                                          context,
+                                          "${product.productName} added to favourites",
+                                        );
+                                      } else {
+                                        _favouriteProvider.removeFavouriteItem(
+                                          product.id,
+                                        );
+                                        showSnackBar(
+                                          context,
+                                          "removed from wishlist",
+                                        );
+                                      }
+                                    },
                                   ),
-                            Positioned(
-                              top: 1,
-                              right: 1,
-                              child: IconButton(
-                                icon: favouriteItems.containsKey(product.id)
-                                    ? Icon(Icons.favorite, color: Colors.pink)
-                                    : Icon(Icons.favorite_border),
-                                onPressed: () {
-                                  if (!favouriteItems.containsKey(product.id)) {
-                                    _favouriteProvider.addProductToFavourite(
-                                      productId: product.id,
-                                      productName: product.productName,
-                                      productPrice: product.productPrice,
-                                      productQuantity: product.quantity,
-                                      description: product.description,
-                                      category: product.category,
-                                      vendorId: product.vendorId,
-                                      fullName: product.fullName,
-                                      image: product.images,
-                                      averageRating: product.averageRating,
-                                      quantity: 1,
-                                    );
-                                    showSnackBar(
-                                      context,
-                                      "${product.productName} added to favourites",
-                                    );
-                                  } else {
-                                    _favouriteProvider.removeFavouriteItem(
-                                      product.id,
-                                    );
-                                    showSnackBar(
-                                      context,
-                                      "removed from wishlist",
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 2,
-                              right: 2,
-                              child: IconButton(
-                                onPressed: () {
-                                  if(!cartItems.containsKey(product.id)){
-                                  _cartProvider.addProductToCart(
-                                    productId: product.id,
-                                    productName: product.productName,
-                                    productPrice: product.productPrice,
-                                    productQuantity: product.quantity,
-                                    description: product.description,
-                                    category: product.category,
-                                    vendorId: product.vendorId,
-                                    fullName: product.fullName,
-                                    image: product.images,
-                                    averageRating: product.averageRating,
-                                    quantity: 1,
-                                  );
-
-                                  showSnackBar(
-                                    context,
-                                    "${product.productName} Added to Cart",
-                                  );
-                                  }
-                                  else{
-                                    _cartProvider.removeItem(product.id);
-
-                                    showSnackBar(
-                                      context,
-                                      "removed from cart",
-                                    );
-                                  }
-                                },
-                                icon: cartItems.containsKey(product.id)? Icon(Icons.shopping_bag, color: Colors.amber,): Image.asset(
-                                  "assets/icons/cart.png",
-                                  height: 26,
-                                  width: 26,
                                 ),
                               ),
-                            ),
-                          ],
+
+                              Positioned(
+                                bottom: 6,
+                                right: 6,
+                                child: CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor: Colors.white,
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    iconSize: 18,
+                                    icon: cartItems.containsKey(product.id)
+                                        ? const Icon(
+                                            Icons.shopping_bag,
+                                            color: Colors.amber,
+                                          )
+                                        : const Icon(
+                                            Icons.shopping_bag_outlined,
+                                          ),
+                                    onPressed: () {
+                                      if (!cartItems.containsKey(product.id)) {
+                                        _cartProvider.addProductToCart(
+                                          productId: product.id,
+                                          productName: product.productName,
+                                          productPrice: product.productPrice,
+                                          productQuantity: product.quantity,
+                                          description: product.description,
+                                          category: product.category,
+                                          vendorId: product.vendorId,
+                                          fullName: product.fullName,
+                                          image: product.images,
+                                          averageRating: product.averageRating,
+                                          quantity: 1,
+                                        );
+                                        showSnackBar(
+                                          context,
+                                          "${product.productName} Added to Cart",
+                                        );
+                                      } else {
+                                        _cartProvider.removeItem(product.id);
+                                        showSnackBar(
+                                          context,
+                                          "removed from cart",
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        product.productName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.productName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+
+                              if (product.averageRating > 0)
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 14,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text("${product.averageRating}"),
+                                  ],
+                                ),
+
+                              const SizedBox(height: 4),
+
+                              Text(
+                                "₹${product.productPrice.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      product.averageRating == 0
-                          ? SizedBox()
-                          : Row(
-                              children: [
-                                Icon(Icons.star, color: Colors.amber, size: 12),
-                                Text("${product.averageRating}"),
-                              ],
-                            ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "₹${product.productPrice.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

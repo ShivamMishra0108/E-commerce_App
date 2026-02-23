@@ -19,21 +19,19 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
-
-
   void initState() {
     super.initState();
     loadPopularProducts();
   }
 
-  void loadPopularProducts() async{
+  void loadPopularProducts() async {
     final ProductController _productController = ProductController();
     try {
-      final products = await _productController.getRelatedProduct(widget.product.id);
+      final products = await _productController.getRelatedProduct(
+        widget.product.id,
+      );
       ref.read(relatedProductProvider.notifier).SetProducts(products);
-    } catch (e) {
-      
-    }
+    } catch (e) {}
     // or getPopularProduct() if you want only popular ones
   }
 
@@ -42,8 +40,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final _relatedProduct = ref.watch(relatedProductProvider);
     final _cartProvider = ref.read(cartProvider.notifier);
     final _favouriteProvide = ref.read(favouriteProvider.notifier);
+    double containerWidth = MediaQuery.of(context).size.width * 0.9;
     ref.watch(favouriteProvider);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -198,7 +197,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    // Product Details
+
                     LayoutBuilder(
                       builder: (context, constraints) {
                         final bool isWide = constraints.maxWidth > 768;
@@ -206,14 +205,15 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         Widget productImage = widget.product.images.isNotEmpty
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
+
                                 child: Container(
                                   color: Colors.grey.shade200,
-                                  width: MediaQuery.of(context).size.width,
+                                  width: containerWidth,
                                   height: 400,
                                   child: Center(
                                     child: Image.network(
                                       widget.product.images.first,
-                                      width: 300,
+                                      width: 260,
                                       height: 300,
                                       fit: BoxFit.cover,
                                       loadingBuilder:
@@ -250,69 +250,68 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         Widget productInfo(Product product) {
                           return Row(
                             children: [
-                              SizedBox(width: 5),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              SizedBox(width: 6),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
 
-                                  children: [
-                                    // PRODUCT NAME
-                                    Text(
-                                      product.productName,
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        letterSpacing: 2,
+                                children: [
+                                  // PRODUCT NAME
+                                  Text(
+                                    product.productName,
+                                    style: const TextStyle(
+                                      fontSize: 23,
+                                      letterSpacing: 2,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        size: 14,
+                                        color: Colors.amber,
                                       ),
+                                      Text("${product.averageRating}"),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 10),
+
+                                  // PRICE
+                                  Text(
+                                    "\$${product.productPrice}",
+                                    style: const TextStyle(
+                                      fontSize: 21,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
                                     ),
+                                  ),
 
-                                    const SizedBox(height: 8),
+                                  const SizedBox(height: 10),
 
-                                    // PRICE
-                                    Text(
-                                      "\$${product.productPrice}",
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
+                                  // DESCRIPTION
+                                  Text(
+                                    "Description",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      height: 1.6,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
-
-                                    const SizedBox(height: 8),
-
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.star,
-                                          size: 14,
-                                          color: Colors.amber,
-                                        ),
-                                        Text("${product.averageRating}"),
-                                      ],
+                                  ),
+                                  Text(
+                                    product.description,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      height: 1.6,
+                                      color: Colors.black,
                                     ),
-
-                                    const SizedBox(height: 8),
-
-                                    // DESCRIPTION
-                                    Text(
-                                      product.description,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        height: 1.6,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Add to Cart",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        height: 1.6,
-                                        color: Color(0xFF4B5563),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ],
                           );
@@ -342,41 +341,92 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         }
                       },
                     ),
-                    TextWidget(title: "Related Products", subtitle: ''),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: Divider(color: Colors.black, thickness: 1),
+                    ),
+                    TextWidget(title: "Related Products", subtitle: 'view all'),
 
-                     SizedBox(
-                                height: 230, // height of the horizontal grid
-                                child: GridView.builder(
-                                  scrollDirection: Axis
-                                      .horizontal, // make it scroll horizontally
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 1, // 1 row
-                                        mainAxisSpacing: 8,
-                                        childAspectRatio:
-                                            1.2, // adjust for width/height of tiles
+                    SizedBox(
+                      height: 230,
+                      child: GridView.builder(
+                        scrollDirection: Axis.horizontal,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1,
+                          mainAxisSpacing: 8,
+                          childAspectRatio: 1.2,
+                        ),
+                        itemCount: _relatedProduct.length,
+                        itemBuilder: (context, index) {
+                          final relatedProduct = _relatedProduct[index];
+                          return Card(
+                            color: Colors.white,
+                            elevation: 4,
+                            borderOnForeground: true,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.zero,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductDetailScreen(
+                                      product: relatedProduct,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          relatedProduct.images[0],
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                        ),
                                       ),
-                                  itemCount: _relatedProduct.length,
-                                  itemBuilder: (context, index) {
-                                    final relatedProduct = _relatedProduct[index];
-                                    return SubcategoryTileWidget(
-                                      image: relatedProduct.images[0],
-                                      title: relatedProduct.productName,
-                                    );
-                                  },
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      relatedProduct.productName,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "\$${relatedProduct.productPrice.toStringAsFixed(2)}",
+                                      style: const TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-
-
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-
         ],
       ),
-      bottomSheet: Padding(
+      bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -16,7 +16,7 @@ class TextWidget extends StatelessWidget {
         children: [
           Text(title,
            style:  GoogleFonts.quicksand(
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
           ),),
            Text(subtitle,
