@@ -144,7 +144,7 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
   void removeItem(String productId){
     state.remove(productId);
 
-    // NOtify listeners that the state has changed:
+   // NOtify listeners that the state has changed:
     state = {...state};
     _saveCartItems();
   }
@@ -156,6 +156,15 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
       totalAmount  += cartItem.quantity * cartItem.productPrice;
     });
     return totalAmount;
+  }
+
+ // Method to clear the cart
+  void clearCart(){
+    state = {};
+
+    state = {...state};
+
+    _saveCartItems();
   }
 
   Map<String, Cart> get getCartItems => state;

@@ -4,7 +4,6 @@ import 'package:e_commerce_app/models/product_model.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/provider/favourite_provider.dart';
 import 'package:e_commerce_app/provider/related_product_providr.dart';
-import 'package:e_commerce_app/views/Details/widgets/subCategory_tile_widget.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/cart_screen.dart';
 import 'package:e_commerce_app/views/screens/nav_screens/widgets/reuseable_textWidget.dart';
 import 'package:flutter/material.dart';

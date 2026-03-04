@@ -1,8 +1,10 @@
 import 'package:e_commerce_app/controllers/orderController.dart';
+import 'package:e_commerce_app/global_variable.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/provider/user_provider.dart';
 import 'package:e_commerce_app/views/Details/screen/shipping_address_screen.dart';
 import 'package:e_commerce_app/views/Details/widgets/shipping_address.dart';
+import 'package:e_commerce_app/views/screens/nav_screens/home_screen.dart';
 import 'package:flutter/cupertino.dart' as Icons;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -642,6 +644,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   delivered: false,
                   context: context,
                 );
+              }).then((value) {
+                _cartProvider.clearCart();
+                showSnackBar(context, "Order successfully placed");
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return HomeScreen();
+                }));
               });
             }
           },
