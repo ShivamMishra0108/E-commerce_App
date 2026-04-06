@@ -13,9 +13,9 @@ class FavoriteScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Get favourites map from provider
     final favouritesMap = ref.watch(favouriteProvider);
+    final favourites = favouritesMap.values.toList();
     final _cartProvider = ref.read(cartProvider.notifier);
     final _favouriteProvide = ref.read(favouriteProvider.notifier);
-    final favourites = favouritesMap.values.toList();
 
     return Scaffold(
       appBar: PreferredSize(

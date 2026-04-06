@@ -54,6 +54,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 10),
 
@@ -61,7 +62,6 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                   "Enter Where Your Order will be placed",
                   style: TextStyle(
                     fontSize: 20,
-                    letterSpacing: 1.7,
                     fontWeight: FontWeight.bold,
                     color: const Color.fromARGB(255, 31, 12, 79),
                   ),
