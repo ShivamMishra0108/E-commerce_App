@@ -1,6 +1,8 @@
 import 'package:e_commerce_app/controllers/auth_controller.dart';
+import 'package:e_commerce_app/models/user.dart';
 import 'package:e_commerce_app/provider/favourite_provider.dart';
 import 'package:e_commerce_app/provider/order_provider.dart';
+import 'package:e_commerce_app/provider/user_provider.dart';
 import 'package:e_commerce_app/views/Details/screen/settings.dart';
 import 'package:e_commerce_app/views/Details/screen/shipping_address_screen.dart';
 import 'package:e_commerce_app/views/Details/widgets/order_screen.dart';
@@ -19,15 +21,26 @@ class AccountScreen extends ConsumerWidget {
     final int favouritesCount = favouritesMap.length;
     final orderMap = ref.watch(orderProvider);
     final int ordersCount = orderMap.length;
+    final user = ref.watch(userProvider);
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: CustomScrollView(
         slivers: [
           _buildAppBar(),
-          SliverToBoxAdapter(child: _buildProfileHeader()),
+
           SliverToBoxAdapter(
-          child: _buildStatsSection(ordersCount, favouritesCount)),
+            child: Container(
+              color: Colors.blue.shade400,
+              child: Column(
+                children: [
+                  _buildProfileHeader(user),
+                  _buildStatsSection(ordersCount, favouritesCount),
+                ],
+              ),
+            ),
+          ),
+
           SliverToBoxAdapter(child: _buildMenuSection(context)),
           SliverToBoxAdapter(child: _buildLogoutButton(context)),
           const SliverToBoxAdapter(child: SizedBox(height: 30)),
@@ -36,51 +49,84 @@ class AccountScreen extends ConsumerWidget {
     );
   }
 
-  // 🌟 APP BAR
+  // APP BAR
   Widget _buildAppBar() {
     return SliverAppBar(
       pinned: true,
       expandedHeight: 80,
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.white,
       flexibleSpace: const FlexibleSpaceBar(
-        title: Text('My Account'),
+        title: Text(
+          'My Account',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
     );
   }
 
-  // 👤 PROFILE HEADER
-  Widget _buildProfileHeader() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      child: Column(
-        children: [
-          CircleAvatar(
+  //  PROFILE HEADER
+  Widget _buildProfileHeader(User? user) {
+  if (user == null) {
+    return const Padding(
+      padding: EdgeInsets.all(20),
+      child: CircularProgressIndicator(color: Colors.white),
+    );
+  }
+
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+    child: Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
+          ),
+          child: CircleAvatar(
             radius: 60,
             backgroundColor: Colors.grey[300],
             child: const Icon(Icons.person, size: 60, color: Colors.white),
           ),
-          const SizedBox(height: 15),
-          const Text(
-            "Aman Sharma",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            "aman@email.com",
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            "Bhopal, Madhya Pradesh",
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
 
-  // 📊 STATS SECTION (UPDATED)
+        const SizedBox(height: 15),
+
+        Text(
+          user.fullName.isNotEmpty ? user.fullName : "No Name",
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+
+        const SizedBox(height: 5),
+
+        Text(
+          user.email.isNotEmpty ? user.email : "No Email",
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+          ),
+        ),
+
+        const SizedBox(height: 5),
+
+        Text(
+          "${user.city}, ${user.state}",
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+  //  STATS SECTION (UPDATED)
   Widget _buildStatsSection(int favouritesCount, int ordersCount) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -93,7 +139,7 @@ class AccountScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildStatItem(ordersCount.toString(), "Orders"),
-          _buildStatItem(favouritesCount.toString(), "Wishlist"), 
+          _buildStatItem(favouritesCount.toString(), "Wishlist"),
           _buildStatItem("5", "Coupons"),
         ],
       ),
@@ -112,15 +158,12 @@ class AccountScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 5),
-        Text(
-          title,
-          style: const TextStyle(color: Colors.grey),
-        ),
+        Text(title, style: const TextStyle(color: Colors.grey)),
       ],
     );
   }
 
-  // ⚙️ MENU SECTION
+  //  MENU SECTION
   Widget _buildMenuSection(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -138,7 +181,7 @@ class AccountScreen extends ConsumerWidget {
           ),
           _buildMenuCard(
             icon: Icons.location_on,
-            title: "Addresses",
+            title: "Address",
             onTap: () {
               Navigator.push(
                 context,
@@ -181,7 +224,7 @@ class AccountScreen extends ConsumerWidget {
     );
   }
 
-  // 🎨 MENU CARD
+  //  MENU CARD
   Widget _buildMenuCard({
     required IconData icon,
     required String title,
@@ -224,7 +267,7 @@ class AccountScreen extends ConsumerWidget {
     );
   }
 
-  // 🔴 LOGOUT BUTTON
+  //  LOGOUT BUTTON
   Widget _buildLogoutButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
